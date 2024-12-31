@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.persistence.entity;
 
+import com.akaci.twotterbackend.persistence.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class AccountJpaEntity {
     @Column(nullable = false, unique = true, length = 20)
     private String username;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -34,6 +35,13 @@ public class AccountJpaEntity {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role")
     private RoleJpaEntity role;
+
+    public AccountJpaEntity(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.createdAt = LocalDateTime.now();
+        this.role = new RoleJpaEntity(role);
+    }
 
 
 

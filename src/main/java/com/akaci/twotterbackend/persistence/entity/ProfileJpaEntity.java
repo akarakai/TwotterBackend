@@ -13,7 +13,10 @@ import lombok.*;
 public class ProfileJpaEntity {
 
     @Id
+    @Column(length = 20)
     private String name;
+
+    @Column(length = 200)
     private String description;
 
 }
