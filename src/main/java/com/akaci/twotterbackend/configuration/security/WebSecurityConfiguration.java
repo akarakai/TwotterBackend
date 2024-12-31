@@ -23,18 +23,11 @@ public class WebSecurityConfiguration {
         // TODO play with this option
 //        http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(c ->
-                c.requestMatchers("/api/public/**").permitAll());
+                c.requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER"));
 
         return http.build();
     }
-
-
-
-
-
-
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
