@@ -31,7 +31,7 @@ public class ExceptionController {
     public ResponseEntity<ErrorResponse> usernameNotValid(UsernameNotValidException usernameNotValidException) {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), usernameNotValidException.getMessage(), LocalDateTime.now());
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
 

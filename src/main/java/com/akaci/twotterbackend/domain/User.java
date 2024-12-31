@@ -1,20 +1,38 @@
 package com.akaci.twotterbackend.domain;
 
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
+import java.util.UUID;
 
+@Getter
+@Setter
 public class User {
 
-    private final String name;
-    private final Profile profile;
-    private final Account account;
+    private UUID id;
+    private String username;
+    private Profile profile;
+    private Account account;
 
-    public User(String name, Profile profile, Account account) {
-        validateName(name);
-        this.name = name;
+    public User(UUID id, String username, Profile profile, Account account) {
+        this.id = id;
+        validateName(username);
+        this.username = username;
         this.profile = profile;
         this.account = account;
+    }
+
+    public User(String username, Profile profile, Account account) {
+        validateName(username);
+        this.username = username;
+        this.profile = profile;
+        this.account = account;
+    }
+
+    public User(String username) {
+        validateName(username);
+        this.username = username;
     }
 
     private void validateName(String name) {

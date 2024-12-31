@@ -30,7 +30,7 @@ public class UserJpaEntity {
     @JoinColumn(name = "account_id")
     private AccountJpaEntity account;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "profile_name")
     private ProfileJpaEntity profile;
 
@@ -45,6 +45,19 @@ public class UserJpaEntity {
 
     @OneToMany(mappedBy = "user")
     private List<UserCommentLikeJpaEntity> likedComments;
+
+    public UserJpaEntity(UUID id, String username, AccountJpaEntity account, ProfileJpaEntity profile) {
+        this.id = id;
+        this.username = username;
+        this.account = account;
+        this.profile = profile;
+    }
+
+    public UserJpaEntity(String username, AccountJpaEntity account, ProfileJpaEntity profile) {
+        this.username = username;
+        this.account = account;
+        this.profile = profile;
+    }
 
 
 }

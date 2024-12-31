@@ -19,9 +19,12 @@ public class Profile {
     }
 
     public void setDescription(String description) {
-        if (description == null || description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException("description of the username is not valid");
+        if (description != null) {
+            if (description.length() > MAX_DESCRIPTION_LENGTH) {
+                throw new IllegalArgumentException("description of the username is not valid");
+            }
         }
+
     }
 
     private void validateName(String username) {

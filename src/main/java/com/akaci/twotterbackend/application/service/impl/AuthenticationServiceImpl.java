@@ -1,7 +1,9 @@
 package com.akaci.twotterbackend.application.service.impl;
 
 import com.akaci.twotterbackend.application.service.AuthenticationService;
+import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.Account;
+import com.akaci.twotterbackend.domain.User;
 import com.akaci.twotterbackend.domain.commonValidator.PasswordValidator;
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
@@ -26,10 +28,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserCrudService userCrudService;
 
-    public AuthenticationServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+    public AuthenticationServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserCrudService userCrudService) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userCrudService = userCrudService;
     }
 
     @Override
@@ -44,6 +48,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String hashedPassword = passwordEncoder.encode(password);
         AccountJpaEntity savedAccountEntity = accountRepository.save(new AccountJpaEntity(username, hashedPassword, Role.USER));
+
+        // after saving the account, create a new user with same username and a null description
+        User newUser = new User(savedAccountEntity.getUsername());
+
+        // persist the username along with the default profile using the crud service
+        userCrudService.createUserFromAccount(newUser, AccountEntityMapper.toDomain(savedAccountEntity));
+
         return AccountEntityMapper.toDomain(savedAccountEntity);
     }
 
