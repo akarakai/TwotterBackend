@@ -32,7 +32,7 @@ public class AccountJpaEntity {
     @Column(name = "last_logged_in")
     private LocalDateTime lastLoggedInAt;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role")
     private RoleJpaEntity role;
 

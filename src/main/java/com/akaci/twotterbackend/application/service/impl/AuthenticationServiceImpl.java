@@ -41,12 +41,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new UsernameAlreadyExistsException();
         }
 
-        String hashedPassword = passwordEncoder.encode(password);
-        LOGGER.info("Hashed password length: {}", hashedPassword.length());
-        AccountJpaEntity accountJpaEntity = new AccountJpaEntity(username, hashedPassword, Role.USER);
-        AccountJpaEntity savedAccountEntity = accountRepository.save(accountJpaEntity);
-        LOGGER.info("New Id {}", savedAccountEntity.getId());
 
+        String hashedPassword = passwordEncoder.encode(password);
+        AccountJpaEntity savedAccountEntity = accountRepository.save(new AccountJpaEntity(username, hashedPassword, Role.USER));
         return AccountEntityMapper.toDomain(savedAccountEntity);
     }
 
