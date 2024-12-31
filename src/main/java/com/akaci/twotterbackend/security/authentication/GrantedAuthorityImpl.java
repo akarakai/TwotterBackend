@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.configuration.security.auth;
+package com.akaci.twotterbackend.security.authentication;
 
 import com.akaci.twotterbackend.persistence.entity.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
