@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class JwtFilter implements OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LogManager.getLogger(JwtFilter.class);
 

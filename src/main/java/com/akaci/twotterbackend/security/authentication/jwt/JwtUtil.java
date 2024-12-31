@@ -5,12 +5,13 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Collection;
 
 public interface JwtUtil {
 
-    String generateJwt(String username, Collection<? extends GrantedAuthority> authorities) throws JOSEException;
+    String generateJwt(String username, Collection<? extends GrantedAuthority> authorities) throws JOSEException, NoSuchAlgorithmException;
     Authentication getAuthenticationFromJwt(String signedJwt) throws ParseException, BadJOSEException, JOSEException;
 
 }

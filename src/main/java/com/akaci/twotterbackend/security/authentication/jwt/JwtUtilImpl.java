@@ -1,79 +1,109 @@
 package com.akaci.twotterbackend.security.authentication.jwt;
 
+
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.akaci.twotterbackend.persistence.entity.enums.Role;
 import com.akaci.twotterbackend.security.authentication.GrantedAuthorityImpl;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.BadJOSEException;
-import com.nimbusds.jose.proc.JWEDecryptionKeySelector;
-import com.nimbusds.jose.proc.JWEKeySelector;
-import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jose.proc.*;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.text.ParseException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
 public class JwtUtilImpl implements JwtUtil {
 
-    private static final String SECRET = "1D37B59349BA15D8CF7D35B35FCA6ABE";
-    private static final long EXPIRATION_TIME = 36000000;
-
-    // All JWTs using none as alg should always be rejected at all times.
-
+    // Secure high-entropy secret key
+    private static final String SECRET = "1D37B59349BA15D8CF7D35B35FCA6ABE"; // Ensure secure key storage practices
+    private static final long EXPIRATION_TIME = 36000000; // 10 hours in milliseconds
+    private static final String ISSUER = "twotter";
 
     @Override
     public String generateJwt(String username, Collection<? extends GrantedAuthority> authorities) throws JOSEException {
-        String authority = authorities.stream().map(GrantedAuthority::getAuthority)
-                .toList().getFirst().substring(5);
-        Date nowDate = new Date();
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (authorities == null || authorities.isEmpty()) {
+            throw new IllegalArgumentException("Authorities cannot be null or empty");
+        }
 
+        String authority = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(auth -> auth.startsWith("ROLE_"))
+                .findFirst()
+                .map(auth -> auth.substring("ROLE_".length())) // Safely remove prefix
+                .orElseThrow(() -> new IllegalStateException("No valid authorities found"));
+
+        Date now = new Date();
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .jwtID(UUID.randomUUID().toString())
                 .subject(username)
                 .claim("auth", authority)
-                .issuer("twotter")
-                .issueTime(nowDate)
-                .expirationTime(new Date(nowDate.getTime() + EXPIRATION_TIME))
+                .issuer(ISSUER)
+                .issueTime(now)
+                .expirationTime(new Date(now.getTime() + EXPIRATION_TIME))
                 .build();
 
-        Payload payload = new Payload(claims.toJSONObject());
         JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
+        JWEObject jweObject = new JWEObject(header, new Payload(claims.toJSONObject()));
 
-        byte[] secretKeyByte = SECRET.getBytes();
-        DirectEncrypter encrypt = new DirectEncrypter(secretKeyByte);
-        JWEObject jweObject = new JWEObject(header, payload);
-        jweObject.encrypt(encrypt);
+        DirectEncrypter encrypter = new DirectEncrypter(SECRET.getBytes());
+        jweObject.encrypt(encrypter);
+
+        // Clear sensitive data if necessary
+        clearSensitiveData(encrypter.getKey().getEncoded());
+
         return jweObject.serialize();
-
     }
 
     @Override
     public Authentication getAuthenticationFromJwt(String signedJwt) throws ParseException, BadJOSEException, JOSEException {
-        ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor = new DefaultJWTProcessor<SimpleSecurityContext>();
-        JWKSource<SimpleSecurityContext> jwtKeySource = new ImmutableSecret<SimpleSecurityContext>(SECRET.getBytes());
-        JWEKeySelector<SimpleSecurityContext> jweKeySelector = new JWEDecryptionKeySelector<SimpleSecurityContext>(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256, jwtKeySource);
+        ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
+        JWKSource<SimpleSecurityContext> keySource = new ImmutableSecret<>(SECRET.getBytes());
 
-        jwtProcessor.setJWEKeySelector(jweKeySelector);
+        jwtProcessor.setJWEKeySelector(new JWEDecryptionKeySelector<>(
+                JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256, keySource));
 
-        JWTClaimsSet claimsSet = jwtProcessor.process(signedJwt, new SimpleSecurityContext());
+        JWTClaimsSet claimsSet = jwtProcessor.process(signedJwt, null);
+
+        // Validate mandatory claims
+        validateClaims(claimsSet);
 
         String username = claimsSet.getSubject();
-        String authorities = (String) claimsSet.getClaim("auth");
+        String authority = claimsSet.getStringClaim("auth");
 
-        return new UsernamePasswordAuthenticationToken(username, null,
-                List.of(new GrantedAuthorityImpl(Role.valueOf(authorities))));
+        return new UsernamePasswordAuthenticationToken(
+                username, null, List.of(new GrantedAuthorityImpl(Role.valueOf(authority))));
+    }
 
 
+    private void validateClaims(JWTClaimsSet claimsSet) throws ParseException {
+        if (!ISSUER.equals(claimsSet.getIssuer())) {
+            throw new SecurityException("Invalid issuer");
+        }
+        if (claimsSet.getExpirationTime().before(new Date())) {
+            throw new SecurityException("JWT has expired");
+        }
+        if (claimsSet.getSubject() == null || claimsSet.getSubject().isEmpty()) {
+            throw new SecurityException("Subject claim is missing or empty");
+        }
+        if (claimsSet.getStringClaim("auth") == null) {
+            throw new SecurityException("Authority claim is missing");
+        }
+    }
 
+    private void clearSensitiveData(byte[] key) {
+        if (key != null) {
+            Arrays.fill(key, (byte) 0);
+        }
     }
 }
+
