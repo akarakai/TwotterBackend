@@ -17,36 +17,13 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-class AuthenticationControllerTest {
-
-    private static final String VALID_USERNAME = "username1998";
-    private static final String VALID_PASSWORD = "password1998";
+class AuthenticationControllerTest extends BaseAuthenticationTest {
     private static final String SECURED_ENDPOINT = "/api/auth/test";
-    private static final String ACCOUNT_CREATE_ENDPOINT = "/api/public/account/create";
-    private static final String LOGIN_ENDPOINT = "/api/auth/login";
-    private static final String COOKIE_NAME = "jwt-token";
-
-
-    ObjectMapper mapper = new ObjectMapper();
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp_createAccount() throws Exception {
-        SignUpRequest request = new SignUpRequest(VALID_USERNAME, VALID_PASSWORD);
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(ACCOUNT_CREATE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request)));
-    }
 
     @Test
     void performLogin_basic_success() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .get(SECURED_ENDPOINT).with(httpBasic(VALID_USERNAME, VALID_PASSWORD)))
+                        .get(SECURED_ENDPOINT).with(httpBasic(VALID_USERNAME, VALID_PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(VALID_USERNAME));
     }
@@ -68,16 +45,12 @@ class AuthenticationControllerTest {
     @Test
     void performLogin_loginOk_jwtCookieCreated() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .post(LOGIN_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new LogInRequest(VALID_USERNAME, VALID_PASSWORD))))
+                        .post(LOGIN_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(new LogInRequest(VALID_USERNAME, VALID_PASSWORD))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(VALID_USERNAME))
-                .andExpect(cookie().exists(COOKIE_NAME))
-                .andExpect(cookie().httpOnly(COOKIE_NAME, true)); // Optionally verify that the cookie is HttpOnly
-        ;
+                .andExpect(cookie().exists(JWT_COOKIE_NAME))
+                .andExpect(cookie().httpOnly(JWT_COOKIE_NAME, true));
     }
-
-
-
 }
