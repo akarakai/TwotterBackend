@@ -1,5 +1,7 @@
 package com.akaci.twotterbackend.application.controller;
 
+import com.akaci.twotterbackend.application.dto.request.ProfileRequest;
+import com.akaci.twotterbackend.application.dto.request.UpdateProfileDescriptionRequest;
 import com.akaci.twotterbackend.application.dto.response.ProfileResponse;
 import com.akaci.twotterbackend.application.service.crud.ProfileCrudService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
@@ -11,9 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.CredentialException;
 
@@ -34,26 +34,39 @@ public class ProfileController {
     // No request body needed because you get username after authentication
     @GetMapping("profile")
     public ResponseEntity<ProfileResponse> getProfile()  {
+        String accountName = getAccountUsername();
+        Profile profile = profileCrudService.getProfileFromUsername(accountName);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body( new ProfileResponse(profile.getUsername(), profile.getDescription()));
+    }
+
+    @PutMapping("profile/description")
+    public ResponseEntity<ProfileResponse> updateProfileDescription(@RequestBody UpdateProfileDescriptionRequest descriptionRequest) {
+        String newDescription = descriptionRequest.newDescription();
+        String accountName = getAccountUsername();
+        Profile updatedProfile = profileCrudService.updateProfileDescription(accountName, newDescription);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ProfileResponse(updatedProfile.getUsername(), updatedProfile.getDescription()));
+
+    }
+
+
+
+
+    private String getAccountUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             throw new RuntimeException("could not get authentication");
         }
-        String accountName = auth.getName();
-        Profile profile = profileCrudService.getProfileFromUsername(accountName);
-
-        ProfileResponse response = new ProfileResponse(profile.getUsername(), profile.getDescription());
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
-
-
-
-
-
-
-
+        return auth.getName();
     }
+
+
+
+
 
 }

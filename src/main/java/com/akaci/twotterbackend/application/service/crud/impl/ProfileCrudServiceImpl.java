@@ -21,24 +21,45 @@ public class ProfileCrudServiceImpl implements ProfileCrudService {
     private static final Logger LOGGER = LogManager.getLogger(ProfileCrudServiceImpl.class);
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
 
-    public ProfileCrudServiceImpl(UserRepository userRepository) {
+    public ProfileCrudServiceImpl(UserRepository userRepository, ProfileRepository profileRepository) {
         this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
     }
 
     @Override
     public Profile getProfileFromUsername(String username) {
+        ProfileJpaEntity profileJpaEntity = getProfileJpaEntity(username);
+
+        return ProfileEntityMapper.toDomain(profileJpaEntity);
+    }
+
+    @Override
+    public Profile updateProfileDescription(String username, String newDescription) {
+        // TODO THis is bad, I created profile only because there is a validator in the description
+        Profile profile = new Profile(username, newDescription);
+
+        ProfileJpaEntity profileJpaEntity = getProfileJpaEntity(profile.getUsername());
+
+        profileJpaEntity.setDescription(newDescription);
+
+
+        // save
+        ProfileJpaEntity savedNewProfile = profileRepository.save(profileJpaEntity);
+
+        return ProfileEntityMapper.toDomain(savedNewProfile);
+    }
+
+
+    private ProfileJpaEntity getProfileJpaEntity(String username) {
         Optional<UserJpaEntity> opUserJpa = userRepository.findByUsername(username);
         if (opUserJpa.isEmpty()) {
             throw new UsernameNotFoundException("username not found");
         }
 
         UserJpaEntity userJpaEntity = opUserJpa.get();
-        ProfileJpaEntity profileJpaEntity = userJpaEntity.getProfile();
-
-        return ProfileEntityMapper.toDomain(profileJpaEntity);
-
-
+        return userJpaEntity.getProfile();
     }
 }

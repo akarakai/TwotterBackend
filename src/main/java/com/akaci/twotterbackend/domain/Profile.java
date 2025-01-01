@@ -24,7 +24,8 @@ public class Profile {
                 throw new IllegalArgumentException("description of the username is not valid");
             }
         }
-        this.description = "";
+
+        this.description = (description == null) ? "" : description;
 
     }
 

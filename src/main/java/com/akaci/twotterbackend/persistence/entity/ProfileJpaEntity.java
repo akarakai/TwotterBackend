@@ -19,5 +19,4 @@ public class ProfileJpaEntity {
     @Column(length = 200)
     private String description;
 
-
 }
