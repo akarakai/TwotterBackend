@@ -36,6 +36,14 @@ class ProfileControllerTest extends BaseAuthenticationTest {
         stockMvcRequest(VALID_NEW_DESCRIPTION)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value(VALID_NEW_DESCRIPTION));
+
+        // control new profile and check if the new description is present
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(GET_PROFILE_ENDPOINT)
+                        .cookie(jwtCookie))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.profileName").value(VALID_USERNAME))
+                .andExpect(jsonPath("$.description").value(VALID_NEW_DESCRIPTION));
     }
 
     @Test
