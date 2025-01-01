@@ -6,5 +6,7 @@ import com.akaci.twotterbackend.domain.User;
 public interface UserCrudService {
 
     User createUserFromAccount(User user, Account account);
+    User findByAccount(Account account);
+    User findByUsername(String username);
 
 }

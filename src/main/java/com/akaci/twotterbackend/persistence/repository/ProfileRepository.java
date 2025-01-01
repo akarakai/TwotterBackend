@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface ProfileRepository extends CrudRepository<ProfileJpaEntity, UUID> {
 
+
+
 }

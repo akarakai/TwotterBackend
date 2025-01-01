@@ -133,7 +133,7 @@ class AccountControllerTest {
         // Profile created with same account and user name. This is default behaviour
         ProfileJpaEntity profile = opUser.get().getProfile();
         assertEquals(VALID_USERNAME, profile.getName());
-        assertNull(profile.getDescription());
+        assertEquals("", profile.getDescription());
     }
 
 }

@@ -9,7 +9,10 @@ import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserCrudServiceImpl implements UserCrudService {
@@ -36,6 +39,21 @@ public class UserCrudServiceImpl implements UserCrudService {
         return UserEntityMapper.toDomain(userJpaEntity);
     }
 
+    @Override
+    public User findByAccount(Account account) {
+        return null;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        Optional<UserJpaEntity> optionalUserJpa = userRepository.findByUsername(username);
+        if (optionalUserJpa.isEmpty()) {
+            throw new UsernameNotFoundException("username not found");
+        }
+
+        UserJpaEntity userJpaEntity = optionalUserJpa.get();
+        return UserEntityMapper.toDomain(userJpaEntity);
+    }
 
     private Profile createProfileFromUser(User user) {
         return new Profile(user.getUsername(), null);

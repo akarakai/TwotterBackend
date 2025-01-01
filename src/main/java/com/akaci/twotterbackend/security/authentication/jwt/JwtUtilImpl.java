@@ -21,9 +21,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 public class JwtUtilImpl implements JwtUtil {
 
-    // Secure high-entropy secret key
-    private static final String SECRET = "1D37B59349BA15D8CF7D35B35FCA6ABE"; // Ensure secure key storage practices
-    private static final long EXPIRATION_TIME = 36000000; // 10 hours in milliseconds
+    private static final String SECRET = "1D37B59349BA15D8CF7D35B35FCA6ABE";
+    private static final long EXPIRATION_TIME = 36000000; // 10 hours
     private static final String ISSUER = "twotter";
 
     @Override
