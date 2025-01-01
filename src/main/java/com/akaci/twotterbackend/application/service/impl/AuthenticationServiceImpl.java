@@ -58,10 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AccountEntityMapper.toDomain(savedAccountEntity);
     }
 
-    @Override
-    public Account logIn(String username, String password) {
-        return null;
-    }
+
 
 
 }

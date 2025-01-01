@@ -19,6 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class WebSecurityConfiguration {
 
+    private final JwtFilter jwtFilter;
+
+    public WebSecurityConfiguration(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,7 +41,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER"));
 
-        http.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

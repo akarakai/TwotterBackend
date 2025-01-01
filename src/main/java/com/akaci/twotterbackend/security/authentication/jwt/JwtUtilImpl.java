@@ -18,7 +18,9 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtUtilImpl implements JwtUtil {
 
     private static final String SECRET = "1D37B59349BA15D8CF7D35B35FCA6ABE";

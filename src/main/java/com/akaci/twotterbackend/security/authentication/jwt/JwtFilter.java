@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.security.authentication.jwt;
 
+import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import jakarta.servlet.FilterChain;
@@ -17,14 +18,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.text.ParseException;
 
+@Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LogManager.getLogger(JwtFilter.class);
     private static final String COOKIE_NAME = "jwt-token";
     private final JwtUtil jwtUtil;
+    private final AccountCrudService accountCrudService;
 
-    public JwtFilter() {
-        this.jwtUtil = new JwtUtilImpl();
+    public JwtFilter(AccountCrudService accountCrudService, JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+        this.accountCrudService = accountCrudService;
     }
 
     @Override
@@ -54,6 +58,9 @@ public class JwtFilter extends OncePerRequestFilter {
                         // Validate and extract authentication from JWT
                         Authentication authentication = jwtUtil.getAuthenticationFromJwt(jwtToken);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
+                        if (authentication != null && authentication.isAuthenticated()) {
+                            accountCrudService.updateLastLoggedIn(authentication.getName());
+                        }
                         filterChain.doFilter(request, response); // Proceed with the filter chain
                         return; // Stop further execution after the filter chain
                     } catch (ParseException | BadJOSEException | JOSEException e) {

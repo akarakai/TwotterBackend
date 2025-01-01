@@ -3,6 +3,7 @@ package com.akaci.twotterbackend.application.controller;
 import com.akaci.twotterbackend.application.dto.request.LogInRequest;
 import com.akaci.twotterbackend.application.dto.response.LogInResponse;
 import com.akaci.twotterbackend.application.dto.response.SignUpResponse;
+import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
 import com.akaci.twotterbackend.security.authentication.jwt.JwtUtil;
 import com.akaci.twotterbackend.security.authentication.jwt.JwtUtilImpl;
 import com.nimbusds.jose.JOSEException;
@@ -32,9 +33,11 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil = new JwtUtilImpl();
 
     private final AuthenticationManager authenticationManager;
+    private final AccountCrudService accountCrudService;
 
-    public AuthenticationController(AuthenticationManager authenticationManager) {
+    public AuthenticationController(AuthenticationManager authenticationManager, AccountCrudService accountCrudService) {
         this.authenticationManager = authenticationManager;
+        this.accountCrudService = accountCrudService;
     }
 
     @GetMapping("test")
@@ -56,8 +59,10 @@ public class AuthenticationController {
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication auth = this.authenticationManager.authenticate(authenticationRequest);
-
         String username = auth.getName();
+        if (auth.isAuthenticated()) {
+            accountCrudService.updateLastLoggedIn(username);
+        }
         var authorities = auth.getAuthorities();
         // generate cookie
         String jwt = jwtUtil.generateJwt(username, authorities);
