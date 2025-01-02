@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jdk.jfr.Enabled;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class UserJpaEntity {
     @Column(unique = true, nullable = false, length = 20)
     private String username;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private AccountJpaEntity account;
 
@@ -35,16 +36,16 @@ public class UserJpaEntity {
     private ProfileJpaEntity profile;
 
     @OneToMany(mappedBy = "author")
-    private List<TwootJpaEntity> twoots;
+    private Set<TwootJpaEntity> twoots = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
-    private List<CommentJpaEntity> comments;
+    private Set<CommentJpaEntity> comments = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserTwootLikeJpaEntity> likedTwoots;
+    private Set<UserTwootLikeJpaEntity> likedTwoots = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserCommentLikeJpaEntity> likedComments;
+    private Set<UserCommentLikeJpaEntity> likedComments = new HashSet<>();
 
     public UserJpaEntity(UUID id, String username, AccountJpaEntity account, ProfileJpaEntity profile) {
         this.id = id;

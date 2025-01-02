@@ -4,6 +4,8 @@ import com.akaci.twotterbackend.application.dto.request.LogInRequest;
 import com.akaci.twotterbackend.application.dto.response.LogInResponse;
 import com.akaci.twotterbackend.application.dto.response.SignUpResponse;
 import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
+import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
+import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import com.akaci.twotterbackend.security.authentication.jwt.JwtUtil;
 import com.akaci.twotterbackend.security.authentication.jwt.JwtUtilImpl;
 import com.nimbusds.jose.JOSEException;
@@ -34,10 +36,13 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final AccountCrudService accountCrudService;
+    private final AccountRepository accountRepository;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, AccountCrudService accountCrudService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, AccountCrudService accountCrudService,
+                                    AccountRepository accountRepository) {
         this.authenticationManager = authenticationManager;
         this.accountCrudService = accountCrudService;
+        this.accountRepository = accountRepository;
     }
 
     @GetMapping("test")
@@ -70,6 +75,9 @@ public class AuthenticationController {
         Cookie cookie = new Cookie(COOKIE_NAME, jwt);
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
+
+
+        AccountJpaEntity acc = accountRepository.findByUsername(username).get();
 
         return ResponseEntity
                 .status(HttpStatus.OK)

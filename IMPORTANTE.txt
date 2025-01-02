@@ -1,1 +1,2 @@
 - Nei test usa @Transactional e Mysql database di test creato da te. H2 e'una tortura. Ovviamente metti spring.jpa.hibernate.ddl-auto=update
+
