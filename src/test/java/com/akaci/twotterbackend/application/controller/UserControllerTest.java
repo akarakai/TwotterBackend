@@ -39,6 +39,22 @@ class UserControllerTest extends BaseAuthenticationTest {
         createAccount(ANOTHER_USERNAME, ANOTHER_PASSWORD);
     }
 
+    private String getFollowEndpoint(String username) {
+        return "/api/user/" + username + "/follow";
+    }
+
+    private String getFollowEndpoint(UUID id) {
+        return "/api/user/id/" + id.toString() + "/follow";
+    }
+
+    private String getUnfollowEndpoint(String username) {
+        return "/api/user/" + username + "/unfollow";
+    }
+
+    private String getUnfollowEndpoint(UUID id) {
+        return "/api/user/id/" + id.toString() + "/unfollow";
+    }
+
     @Test
     void followUser_validUsernames_userFollowed() throws Exception {
         performFollowRequest(ANOTHER_USERNAME)
@@ -78,6 +94,42 @@ class UserControllerTest extends BaseAuthenticationTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void unfollowUser_userAlreadyFollowed_userRemovedFromFollowedAndOtherFromFollowers() throws Exception {
+        performFollowRequest(ANOTHER_USERNAME);
+        performUnfollowRequest(ANOTHER_USERNAME)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value(ANOTHER_USERNAME));
+    }
+
+    @Test
+    void unfollowUser_userWasNotFollowed_badRequestResponse() throws Exception {
+        performUnfollowRequest(ANOTHER_USERNAME)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void unfollowUser_goodId_success() throws Exception {
+        performFollowRequest(ANOTHER_USERNAME);
+
+        Optional<UserJpaEntity> userCreatedNew = userRepository.findByUsername(ANOTHER_USERNAME);
+        assert userCreatedNew.isPresent();
+        UserJpaEntity user = userCreatedNew.get();
+
+        performUnfollowRequest(user.getId())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value(ANOTHER_USERNAME));
+    }
+
+    @Test
+    void unfollowUser_notAnUUID_badRequestResponse() throws Exception {
+        String badId = "im-totally-not-an-uuid-LMAO";
+        performFollowRequest(ANOTHER_USERNAME);
+        performUnfollowRequest("/api/user/id/" + badId + "/unfollow")
+        .andExpect(status().isNotFound());
+
+    }
+
 
     private ResultActions performFollowRequest(String username) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders
@@ -89,13 +141,17 @@ class UserControllerTest extends BaseAuthenticationTest {
                 .post(getFollowEndpoint(id)).cookie(jwtDefaultUser));
     }
 
-    private String getFollowEndpoint(String username) {
-        return "/api/user/" + username + "/follow";
+    private ResultActions performUnfollowRequest(String username) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                .post(getUnfollowEndpoint(username)).cookie(jwtDefaultUser));
     }
 
-    private String getFollowEndpoint(UUID id) {
-        return "/api/user/id/" + id.toString() + "/follow";
+    private ResultActions performUnfollowRequest(UUID id) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                .post(getUnfollowEndpoint(id)).cookie(jwtDefaultUser));
     }
+
+
 
 
 

@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.domain;
 
 import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
+import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,5 +57,26 @@ class UserTest {
 
         // check again
         assertTrue(USER2.getFollowers().contains(USER));
+    }
+
+    @Test
+    void unfollowUser_userWasAlreadyFollowed_userRemovedFromFollowedAndFollowers() {
+        USER.follow(USER2);
+        assertTrue(USER.getFollowed().contains(USER2));
+        assertTrue(USER2.getFollowers().contains(USER));
+
+        int followedSize = USER.getFollowed().size();
+        USER.unfollow(USER2);
+        assertEquals(followedSize - 1, USER.getFollowed().size());
+
+        assertFalse(USER.getFollowed().contains(USER2));
+        assertFalse(USER2.getFollowers().contains(USER));
+
+    }
+
+    @Test
+    void unfollowUser_userWasNotFollowed_throwsException() {
+        assertThrows(BadRequestExceptionResponse.class, () -> USER.unfollow(USER2));
+
     }
 }

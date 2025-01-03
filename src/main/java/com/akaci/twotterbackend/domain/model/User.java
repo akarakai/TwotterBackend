@@ -2,7 +2,9 @@ package com.akaci.twotterbackend.domain.model;
 
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
+import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import lombok.*;
+import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,6 +76,22 @@ public class User {
             return;
         }
         followers.add(user);
+    }
+
+    public void unfollow(User user) {
+        if (!followed.contains(user)) {
+            throw new BadRequestExceptionResponse("user was not followed");
+        }
+        followed.remove(user);
+        user.removeFromFollowers(this);
+    }
+
+    private void removeFromFollowers(User user) {
+        if (!followers.contains(user)) {
+            // do nothing
+            return;
+        }
+        followers.remove(user);
     }
 
     // Override equals and hashCode for proper comparison based on the unique 'id'

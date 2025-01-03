@@ -54,8 +54,27 @@ public class FollowServiceImpl implements FollowService {
         return followAndSave(user, userToFollow);
     }
 
+    @Override
+    public User unfollowUserByUsername(String username, String usernameToUnfollow) {
+        validateInputs(username, usernameToUnfollow);
+
+        UserJpaEntity user = getUserEntityByUsername(username);
+        UserJpaEntity userToUnfollow = getUserEntityByUsername(usernameToUnfollow);
+
+        return unfollowAndSave(user, userToUnfollow);
+    }
+
+    @Override
+    public User unfollowUserById(String username, UUID id) {
+        validateInputs(username, id);
+
+        UserJpaEntity user = getUserEntityByUsername(username);
+        UserJpaEntity userToUnfollow = getUserEntityById(id);
+
+        return unfollowAndSave(user, userToUnfollow);
 
 
+    }
 
     private void validateInputs(String username, String usernameToFollow) {
         if (username == null || username.isEmpty() || usernameToFollow == null || usernameToFollow.isEmpty()) {
@@ -95,6 +114,18 @@ public class FollowServiceImpl implements FollowService {
         userRepository.save(UserEntityMapper.toJpaEntity(userToFollowDomain));
 
         return userToFollowDomain;
+    }
+
+    private User unfollowAndSave(UserJpaEntity user, UserJpaEntity userToUnfollow) {
+        User userDomain = UserEntityMapper.toDomain(user);
+        User userToUnfollowDomain = UserEntityMapper.toDomain(userToUnfollow);
+
+        followDomainService.unfollow(userDomain, userToUnfollowDomain);
+
+        userRepository.save(UserEntityMapper.toJpaEntity(userDomain));
+        userRepository.save(UserEntityMapper.toJpaEntity(userToUnfollowDomain));
+
+        return userToUnfollowDomain;
     }
 }
 

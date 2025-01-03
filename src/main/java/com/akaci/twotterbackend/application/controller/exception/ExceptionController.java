@@ -2,6 +2,8 @@ package com.akaci.twotterbackend.application.controller.exception;
 
 import com.akaci.twotterbackend.application.dto.response.ErrorResponse;
 import com.akaci.twotterbackend.exceptions.*;
+import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
+import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,17 @@ import java.time.LocalDateTime;
 public class ExceptionController {
 
     private static final Logger LOGGER = LogManager.getLogger(ExceptionController.class);
+
+    @ExceptionHandler(BadRequestExceptionResponse.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestExceptionResponse ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+
+
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> usernameAlreadyExists(UsernameAlreadyExistsException usernameAlreadyExistsException) {
