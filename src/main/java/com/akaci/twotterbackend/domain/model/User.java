@@ -33,12 +33,16 @@ public class User {
         validateName(username);
         this.username = username;
         this.profile = profile;
+        this.followed = new HashSet<>();
+        this.followers = new HashSet<>();
     }
 
     public User(UUID id, String username, Profile profile) {
         this.id = id;
         validateName(username);
         this.username = username;
+        this.followed = new HashSet<>();
+        this.followers = new HashSet<>();
     }
 
     public void changeUsername(String username) {
@@ -58,6 +62,8 @@ public class User {
         this.id = UUID.randomUUID();
         validateName(username);
         this.username = username;
+        this.followed = new HashSet<>();
+        this.followers = new HashSet<>();
     }
 
     // Add a user to the 'followed' set

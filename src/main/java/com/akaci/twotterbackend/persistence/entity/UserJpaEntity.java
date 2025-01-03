@@ -1,8 +1,5 @@
 package com.akaci.twotterbackend.persistence.entity;
 
-import com.akaci.twotterbackend.persistence.entity.joinEntity.follow.FollowUserJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.like.UserCommentLikeJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.like.UserTwootLikeJpaEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -52,13 +49,13 @@ public class UserJpaEntity {
     @Builder.Default
     private Set<CommentJpaEntity> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany(mappedBy = "likedByUsers")
     @Builder.Default
-    private Set<UserTwootLikeJpaEntity> likedTwoots = new HashSet<>();
+    private Set<TwootJpaEntity> likedTwoots = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany(mappedBy = "likedByUsers")
     @Builder.Default
-    private Set<UserCommentLikeJpaEntity> likedComments = new HashSet<>();
+    private Set<CommentJpaEntity> likedComments = new HashSet<>();
 
     public UserJpaEntity(UUID id, String username, ProfileJpaEntity profile) {
         this.id = id;

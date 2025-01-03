@@ -4,3 +4,16 @@
 
 - @EmbeddedId, devi mette gli id tu quando creei allinizio. Non vengono generati auto
 
+- MI SEMBRA NEI CRUD ESTREMAMENTE BRUTTO METTERE NEI PARAMETRI DOMAIN OBJECT,
+    SAREBBE MEGLIO METTERE SOLO ID O LE COSE PIU EZ PER FARE LE QUERY
+    ALTRIMENTI DEVI CREARE NEL CONTROLLER I DOMAIN OBJECT
+        Twoot createTwoot(String username, String content);     BENE
+        User createUserFromAccount(User user, Account account); male
+
+- Allora quando hai un many to one relation, quello scarso e'quello che ha il mappedBy, tipicamente in
+    relatione ManyToOne e' la parte che ha il set. Per aggiungere un item al set basta che aggiungi
+    il Many nel one, che e'foreign key. For esempio nel mio caso Aggiungo user al twoot.
+    quando poi fetcho user, il twoot e; presente nel set. Invece se modifichi il set non succede niente.
+    Remember: For these types of relationships in JPA, the database state is controlled by the owning side of
+    the relationship (@ManyToOne in TwootJpaEntity), not by the collection in the non-owning side
+    (@OneToMany in UserJpaEntity).

@@ -5,6 +5,7 @@ import lombok.*;
 import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,9 +33,12 @@ public class TwootJpaEntity {
     private UserJpaEntity author;
 
     @ManyToMany
-    private Set<UserJpaEntity> likedByUsers;
-
-
-
+    @JoinTable(
+            name = "twoot_likes",
+            joinColumns = @JoinColumn(name = "author_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "twoot_id")
+    )
+    @Builder.Default
+    private Set<UserJpaEntity> likedByUsers = new HashSet<>();
 
 }

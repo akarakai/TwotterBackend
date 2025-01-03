@@ -31,6 +31,11 @@ public class CommentJpaEntity {
     private UserJpaEntity author;
 
     @ManyToMany
+    @JoinTable(
+            name = "comment_likes",
+            joinColumns = @JoinColumn(name = "author_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "comment_id")
+    )
     private Set<UserJpaEntity> likedByUsers;
 
 }

@@ -53,7 +53,7 @@ public class UserEntityMapper {
 
     }
 
-    private static Set<UserJpaEntity> setToJpa(Set<User> user) {
+    public static Set<UserJpaEntity> setToJpa(Set<User> user) {
         return user.stream().map(u -> {
             ProfileJpaEntity profileJpa = ProfileEntityMapper.toJpaEntity(u.getProfile());
             return UserJpaEntity.builder()
@@ -65,7 +65,7 @@ public class UserEntityMapper {
     }
 
     // dont convert nested user (pther follower/followers)
-    private static Set<User> setToDomain(Set<UserJpaEntity> user) {
+    public static Set<User> setToDomain(Set<UserJpaEntity> user) {
         return user.stream().map(u -> {
             Profile profile = ProfileEntityMapper.toDomain(u.getProfile());
             return User.builder()
