@@ -20,7 +20,7 @@ class JwtUtilImplTest {
 
     private static final Logger LOGGER = LogManager.getLogger(JwtUtilImplTest.class);
 
-    private JwtUtil jwtUtil = new JwtUtilImpl();
+    private final JwtUtil jwtUtil = new JwtUtilImpl();
 
     private static final String USERNAME = "goodUsername1998";
     private static final String ROLE = "ROLE_USER";

@@ -2,9 +2,13 @@ package com.akaci.twotterbackend.domain;
 
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.exceptions.UsernameNotValidException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Builder
+@Setter
 public class Profile {
 
     private final String username;

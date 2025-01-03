@@ -13,6 +13,12 @@ public class FollowDomainServiceImpl implements FollowDomainService {
 
     @Override
     public void follow(User user, User userToFollow) {
+        if (user == null || userToFollow == null) {
+            throw new NullPointerException();
+        }
+
+        user.follow(userToFollow);
+
 
     }
 }

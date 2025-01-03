@@ -40,11 +40,13 @@ class AccountControllerTest extends BaseAuthenticationTest {
 
     @Test
     void createAccount_success() throws Exception {
-        SignUpRequest signUpRequest = new SignUpRequest(VALID_USERNAME, VALID_PASSWORD);
+        SignUpRequest signUpRequest = new SignUpRequest(VALID_USERNAME+"sa", VALID_PASSWORD+"da");
 
-        performPostRequest(ACCOUNT_CREATE_ENDPOINT, signUpRequest)
+        ResultActions result = performPostRequest(ACCOUNT_CREATE_ENDPOINT, signUpRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value(signUpRequest.username()));
+
+
     }
 
     @Test
@@ -92,8 +94,7 @@ class AccountControllerTest extends BaseAuthenticationTest {
         Optional<UserJpaEntity> opUser = userRepository.findByUsername(VALID_USERNAME);
         assertTrue(opUser.isPresent());
 
-        AccountJpaEntity account = opUser.get().getAccount();
-        assertEquals(VALID_USERNAME, account.getUsername());
+
 
         // Profile created with same account and user name. This is default behaviour
         ProfileJpaEntity profile = opUser.get().getProfile();

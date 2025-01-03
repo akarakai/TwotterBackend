@@ -1,10 +1,8 @@
-package com.akaci.twotterbackend.persistence.entity.joinEntity;
+package com.akaci.twotterbackend.persistence.entity.joinEntity.like;
 
 import com.akaci.twotterbackend.persistence.entity.CommentJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.joinEntity.embeddedId.UserCommentLikeId;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.embeddedId.UserTwootLikeId;
 import jakarta.persistence.*;
 import lombok.*;
 

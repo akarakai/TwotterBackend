@@ -26,6 +26,10 @@ public class AccountJpaEntity {
     @Column(nullable = false, length = 100)
     private String password;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private UserJpaEntity user;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

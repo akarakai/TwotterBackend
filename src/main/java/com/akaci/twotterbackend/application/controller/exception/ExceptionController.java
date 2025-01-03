@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.application.controller.exception;
 
 import com.akaci.twotterbackend.application.dto.response.ErrorResponse;
 import com.akaci.twotterbackend.exceptions.PasswordRefusedException;
+import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
 import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
 import com.akaci.twotterbackend.exceptions.UsernameNotValidException;
 import org.apache.logging.log4j.LogManager;
@@ -46,6 +47,13 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> illegalArgument(IllegalArgumentException illegalArgumentException) {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), illegalArgumentException.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);    }
+
+    @ExceptionHandler(UserAlreadyFollowedException.class)
+    public ResponseEntity<ErrorResponse> userAlreadyFollowed(UserAlreadyFollowedException userAlreadyFollowedException) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), userAlreadyFollowedException.getMessage(), LocalDateTime.now());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(error);

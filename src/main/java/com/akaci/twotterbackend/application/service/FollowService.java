@@ -4,6 +4,6 @@ import com.akaci.twotterbackend.domain.User;
 
 public interface FollowService {
 
-    void follow(String username, String usernameToFollow);
+    User follow(String username, String usernameToFollow);
 
 }

@@ -2,50 +2,64 @@ package com.akaci.twotterbackend.domain;
 
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @Setter
 public class User {
 
     private static final Logger LOGGER = LogManager.getLogger(User.class);
 
-    private UUID id;
+    private final UUID id;
     private String username;
     private Profile profile;
-    private Account account;
+
+    @Builder.Default
     private Set<User> followed = new HashSet<>();
+    @Builder.Default
     private Set<User> followers = new HashSet<>();
 
     // Constructor with all attributes
-    public User(UUID id, String username, Profile profile, Account account) {
+    public User(String username, Profile profile) {
+        this.id = UUID.randomUUID();
+        validateName(username);
+        this.username = username;
+        this.profile = profile;
+    }
+
+    public User(UUID id, String username, Profile profile) {
         this.id = id;
         validateName(username);
         this.username = username;
-        this.profile = profile;
-        this.account = account;
+    }
+
+    public void changeUsername(String username) {
+        validateName(username);
+        this.username = username;
     }
 
     // Constructor without the ID (for new users, for example)
-    public User(String username, Profile profile, Account account) {
-        validateName(username);
-        this.username = username;
-        this.profile = profile;
-        this.account = account;
-    }
+//    public User(String username, Profile profile) {
+//        validateName(username);
+//        this.username = username;
+//        this.profile = profile;
+//    }
 
     // Constructor with just a username (could be used when minimal information is needed)
     public User(String username) {
+        this.id = UUID.randomUUID();
         validateName(username);
         this.username = username;
     }
 
     // Add a user to the 'followed' set
+    // TODO RECURSIVE ERROR?
     public void follow(User user) {
         if (followed.contains(user)) {
             throw new UserAlreadyFollowedException();

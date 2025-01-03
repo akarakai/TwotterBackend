@@ -16,16 +16,16 @@ class UserTest {
 
     private static final Logger LOGGER = LogManager.getLogger(UserTest.class);
 
-    private static final User USER = new User(UUID.randomUUID(), "username98", null, null);
-    private static final User USER2 = new User(UUID.randomUUID(), "username89", null, null);
+    private static final User USER = new User(UUID.randomUUID(), "username98", null, new HashSet<>(), new HashSet<>());
+    private static final User USER2 = new User(UUID.randomUUID(), "username89", null, new HashSet<>(), new HashSet<>());
 
     @BeforeEach
     void setUp() {
         Set<User> FOLLOWED = new HashSet<>();
-        FOLLOWED.add(new User(UUID.randomUUID(), "username99332", null, null));
-        FOLLOWED.add(new User(UUID.randomUUID(), "username98244", null, null));
-        FOLLOWED.add(new User(UUID.randomUUID(), "username97344", null, null));
-        FOLLOWED.add(new User(UUID.randomUUID(), "username96771", null, null));
+        FOLLOWED.add(new User(UUID.randomUUID(), "username99332", null, new HashSet<>(), new HashSet<>()));
+        FOLLOWED.add(new User(UUID.randomUUID(), "username98244", null, new HashSet<>(), new HashSet<>()));
+        FOLLOWED.add(new User(UUID.randomUUID(), "username97344", null, new HashSet<>(), new HashSet<>()));
+        FOLLOWED.add(new User(UUID.randomUUID(), "username96771", null, new HashSet<>(), new HashSet<>()));
 
         USER.setFollowed(FOLLOWED); // should not do this in code, because it will not update followers
     }

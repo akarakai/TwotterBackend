@@ -25,7 +25,7 @@ class ProfileControllerTest extends BaseAuthenticationTest {
     void getProfile_successful() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .get(GET_PROFILE_ENDPOINT)
-                        .cookie(jwtCookie))
+                        .cookie(jwtDefaultUser))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.profileName").value(VALID_USERNAME))
                 .andExpect(jsonPath("$.description").value(DEFAULT_EMPtY_DESCRIPTION));
@@ -40,7 +40,7 @@ class ProfileControllerTest extends BaseAuthenticationTest {
         // control new profile and check if the new description is present
         mockMvc.perform(MockMvcRequestBuilders
                         .get(GET_PROFILE_ENDPOINT)
-                        .cookie(jwtCookie))
+                        .cookie(jwtDefaultUser))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.profileName").value(VALID_USERNAME))
                 .andExpect(jsonPath("$.description").value(VALID_NEW_DESCRIPTION));
@@ -57,7 +57,7 @@ class ProfileControllerTest extends BaseAuthenticationTest {
         UpdateProfileDescriptionRequest request = new UpdateProfileDescriptionRequest(description);
         return mockMvc.perform(MockMvcRequestBuilders
                 .put(PUT_PROFILE_NEW_DESCRIPTION)
-                .cookie(jwtCookie)
+                .cookie(jwtDefaultUser)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapper.writeValueAsString(request)));
 
     }

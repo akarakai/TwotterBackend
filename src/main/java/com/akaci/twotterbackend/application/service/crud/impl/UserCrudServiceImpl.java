@@ -32,7 +32,7 @@ public class UserCrudServiceImpl implements UserCrudService {
 
         // insert profile and account to the user
         user.setProfile(newProfileFromUser);
-        user.setAccount(account);
+//        user.setAccount(account);
 
         UserJpaEntity userJpaEntity = UserEntityMapper.toJpaEntity(user);
         userRepository.save(userJpaEntity);

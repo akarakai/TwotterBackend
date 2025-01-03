@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.persistence.entity.joinEntity;
+package com.akaci.twotterbackend.persistence.entity.joinEntity.like;
 
 import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;

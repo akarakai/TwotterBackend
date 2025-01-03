@@ -34,26 +34,26 @@ public class BaseAuthenticationTest {
     protected MockMvc mockMvc;
 
     protected ObjectMapper mapper = new ObjectMapper();
-    protected Cookie jwtCookie;
+    protected Cookie jwtDefaultUser;
 
     @BeforeEach
     protected void setUp_createAccount() throws Exception {
-        createAccount();
-        jwtCookie = getJwtCookie();
+        createAccount(VALID_USERNAME, VALID_PASSWORD);
+        jwtDefaultUser = getJwtCookie(VALID_USERNAME, VALID_PASSWORD);
     }
 
-    protected void createAccount() throws Exception {
-        SignUpRequest request = new SignUpRequest(VALID_USERNAME, VALID_PASSWORD);
+    protected void createAccount(String username, String password) throws Exception {
+        SignUpRequest request = new SignUpRequest(username, password);
         mockMvc.perform(MockMvcRequestBuilders
                 .post(ACCOUNT_CREATE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)));
     }
 
-    protected Cookie getJwtCookie() throws Exception {
+    protected Cookie getJwtCookie(String username, String password) throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(new LogInRequest(VALID_USERNAME, VALID_PASSWORD))))
+                        .content(mapper.writeValueAsString(new LogInRequest(username, password))))
                 .andReturn();
 
         return mvcResult.getResponse().getCookie(JWT_COOKIE_NAME);
