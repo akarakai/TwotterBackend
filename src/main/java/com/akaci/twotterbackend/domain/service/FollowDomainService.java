@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.domain.service;
 
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.User;
 
 public interface FollowDomainService {
 

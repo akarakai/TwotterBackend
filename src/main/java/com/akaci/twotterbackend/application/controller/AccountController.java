@@ -3,7 +3,7 @@ package com.akaci.twotterbackend.application.controller;
 import com.akaci.twotterbackend.application.dto.request.SignUpRequest;
 import com.akaci.twotterbackend.application.dto.response.SignUpResponse;
 import com.akaci.twotterbackend.application.service.AuthenticationService;
-import com.akaci.twotterbackend.domain.Account;
+import com.akaci.twotterbackend.domain.model.Account;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;

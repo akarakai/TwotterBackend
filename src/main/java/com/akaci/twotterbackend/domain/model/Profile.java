@@ -1,7 +1,6 @@
-package com.akaci.twotterbackend.domain;
+package com.akaci.twotterbackend.domain.model;
 
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
-import com.akaci.twotterbackend.exceptions.UsernameNotValidException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

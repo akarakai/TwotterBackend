@@ -2,15 +2,14 @@ package com.akaci.twotterbackend.application.service.impl;
 
 import com.akaci.twotterbackend.application.service.AuthenticationService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
-import com.akaci.twotterbackend.domain.Account;
-import com.akaci.twotterbackend.domain.Profile;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.Account;
+import com.akaci.twotterbackend.domain.model.Profile;
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.domain.commonValidator.PasswordValidator;
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
 import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.ProfileJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.RoleJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.enums.Role;
 import com.akaci.twotterbackend.persistence.mapper.AccountEntityMapper;
@@ -20,14 +19,12 @@ import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {

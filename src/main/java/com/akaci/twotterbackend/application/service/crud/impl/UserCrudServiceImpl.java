@@ -1,9 +1,9 @@
 package com.akaci.twotterbackend.application.service.crud.impl;
 
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
-import com.akaci.twotterbackend.domain.Account;
-import com.akaci.twotterbackend.domain.Profile;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.Account;
+import com.akaci.twotterbackend.domain.model.Profile;
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;

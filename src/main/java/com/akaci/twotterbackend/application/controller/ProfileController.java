@@ -1,11 +1,9 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.application.dto.request.ProfileRequest;
 import com.akaci.twotterbackend.application.dto.request.UpdateProfileDescriptionRequest;
 import com.akaci.twotterbackend.application.dto.response.ProfileResponse;
 import com.akaci.twotterbackend.application.service.crud.ProfileCrudService;
-import com.akaci.twotterbackend.application.service.crud.UserCrudService;
-import com.akaci.twotterbackend.domain.Profile;
+import com.akaci.twotterbackend.domain.model.Profile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -14,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.security.auth.login.CredentialException;
 
 @RestController
 @RequestMapping("api")

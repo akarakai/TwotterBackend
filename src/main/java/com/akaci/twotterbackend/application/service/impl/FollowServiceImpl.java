@@ -1,13 +1,12 @@
 package com.akaci.twotterbackend.application.service.impl;
 
 import com.akaci.twotterbackend.application.service.FollowService;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.domain.service.FollowDomainService;
+import com.akaci.twotterbackend.exceptions.UserToFollowNotFoundException;
 import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.embeddedId.FollowSystemId;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.follow.FollowUserJpaEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -16,15 +15,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+import java.util.UUID;
+
 
 @Service
 public class FollowServiceImpl implements FollowService {
 
-    private static final Logger LOGGER  = LogManager.getLogger(FollowServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(FollowServiceImpl.class);
 
     private final FollowDomainService followDomainService;
     private final UserRepository userRepository;
@@ -36,38 +34,69 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     @Transactional
-    public User follow(String username, String usernameToFollow) {
-        UsernameValidator.validate(usernameToFollow);
-        if (username == null || username.isEmpty() || usernameToFollow.isEmpty()) {
+    public User followUserByUsername(String username, String usernameToFollow) {
+        validateInputs(username, usernameToFollow);
+
+        UserJpaEntity user = getUserEntityByUsername(username);
+        UserJpaEntity userToFollow = getUserEntityByUsername(usernameToFollow);
+
+        return followAndSave(user, userToFollow);
+    }
+
+    @Override
+    @Transactional
+    public User followUserById(String username, UUID id) {
+        validateInputs(username, id);
+
+        UserJpaEntity user = getUserEntityByUsername(username);
+        UserJpaEntity userToFollow = getUserEntityById(id);
+
+        return followAndSave(user, userToFollow);
+    }
+
+
+
+
+    private void validateInputs(String username, String usernameToFollow) {
+        if (username == null || username.isEmpty() || usernameToFollow == null || usernameToFollow.isEmpty()) {
             throw new IllegalArgumentException("Username or Follow Name cannot be empty");
         }
 
         if (username.equals(usernameToFollow)) {
-            throw new UsernameAlreadyExistsException(); // TODO an other exception
+            throw new UsernameAlreadyExistsException(); // TODO: Use a more appropriate exception
         }
 
-        Optional<UserJpaEntity> opUser = userRepository.findByUsername(username);
-        assert opUser.isPresent(); // because already logged in
-        Optional<UserJpaEntity> opUserToFollow = userRepository.findByUsername(usernameToFollow);
-        if (opUserToFollow.isEmpty()) {
-            throw new UsernameNotFoundException("user to follow does not exist");
+        UsernameValidator.validate(usernameToFollow);
+    }
+
+    private void validateInputs(String username, UUID id) {
+        if (username == null || username.isEmpty() || id == null) {
+            throw new IllegalArgumentException("Username or Follow Id cannot be empty");
         }
+    }
 
-        UserJpaEntity userToFollow = opUserToFollow.get();
-        UserJpaEntity user = opUser.get();
+    private UserJpaEntity getUserEntityByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(UserToFollowNotFoundException::new);
+    }
 
+    private UserJpaEntity getUserEntityById(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserToFollowNotFoundException::new);
+    }
+
+    private User followAndSave(UserJpaEntity user, UserJpaEntity userToFollow) {
         User userDomain = UserEntityMapper.toDomain(user);
         User userToFollowDomain = UserEntityMapper.toDomain(userToFollow);
 
         followDomainService.follow(userDomain, userToFollowDomain);
 
-        // reconvert and save to repository
-        userRepository.save(UserEntityMapper.toJpaEntity(userToFollowDomain));
         userRepository.save(UserEntityMapper.toJpaEntity(userDomain));
+        userRepository.save(UserEntityMapper.toJpaEntity(userToFollowDomain));
 
         return userToFollowDomain;
-
     }
 }
+
 
 

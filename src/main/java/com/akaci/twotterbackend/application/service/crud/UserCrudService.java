@@ -1,7 +1,7 @@
 package com.akaci.twotterbackend.application.service.crud;
 
-import com.akaci.twotterbackend.domain.Account;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.Account;
+import com.akaci.twotterbackend.domain.model.User;
 
 public interface UserCrudService {
 

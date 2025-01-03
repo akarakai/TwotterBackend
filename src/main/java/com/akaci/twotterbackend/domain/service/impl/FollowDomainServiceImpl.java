@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.domain.service.impl;
 
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.domain.service.FollowDomainService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

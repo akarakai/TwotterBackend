@@ -1,32 +1,9 @@
 package com.akaci.twotterbackend.application.service.impl;
 
-import com.akaci.twotterbackend.application.service.FollowService;
-import com.akaci.twotterbackend.domain.User;
-import com.akaci.twotterbackend.domain.service.FollowDomainService;
-import com.akaci.twotterbackend.domain.service.impl.FollowDomainServiceImpl;
-import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
-import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
-import com.akaci.twotterbackend.exceptions.UsernameNotValidException;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.follow.FollowUserJpaEntity;
-import com.akaci.twotterbackend.persistence.repository.UserRepository;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FollowServiceImplTest {

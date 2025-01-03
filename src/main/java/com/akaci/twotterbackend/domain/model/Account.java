@@ -1,11 +1,10 @@
-package com.akaci.twotterbackend.domain;
+package com.akaci.twotterbackend.domain.model;
 
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.persistence.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.UUID;
 

@@ -1,16 +1,11 @@
 package com.akaci.twotterbackend.persistence.mapper;
 
-import com.akaci.twotterbackend.domain.Account;
-import com.akaci.twotterbackend.domain.Profile;
-import com.akaci.twotterbackend.domain.User;
-import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
+import com.akaci.twotterbackend.domain.model.Profile;
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.persistence.entity.ProfileJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.joinEntity.follow.FollowUserJpaEntity;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UserEntityMapper {

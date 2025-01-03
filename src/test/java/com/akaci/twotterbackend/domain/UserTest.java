@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.domain;
 
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

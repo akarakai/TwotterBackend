@@ -1,7 +1,6 @@
 package com.akaci.twotterbackend.application.service.crud;
 
-import com.akaci.twotterbackend.domain.Profile;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.Profile;
 
 public interface ProfileCrudService {
 

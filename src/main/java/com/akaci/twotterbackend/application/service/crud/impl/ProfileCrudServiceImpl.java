@@ -1,8 +1,7 @@
 package com.akaci.twotterbackend.application.service.crud.impl;
 
 import com.akaci.twotterbackend.application.service.crud.ProfileCrudService;
-import com.akaci.twotterbackend.domain.Profile;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.Profile;
 import com.akaci.twotterbackend.persistence.entity.ProfileJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
 import com.akaci.twotterbackend.persistence.mapper.ProfileEntityMapper;

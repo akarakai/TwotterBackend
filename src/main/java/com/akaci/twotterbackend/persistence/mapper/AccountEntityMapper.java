@@ -1,7 +1,7 @@
 package com.akaci.twotterbackend.persistence.mapper;
 
-import com.akaci.twotterbackend.domain.Account;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.Account;
+import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.RoleJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;

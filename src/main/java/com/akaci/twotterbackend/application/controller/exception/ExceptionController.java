@@ -1,10 +1,7 @@
 package com.akaci.twotterbackend.application.controller.exception;
 
 import com.akaci.twotterbackend.application.dto.response.ErrorResponse;
-import com.akaci.twotterbackend.exceptions.PasswordRefusedException;
-import com.akaci.twotterbackend.exceptions.UserAlreadyFollowedException;
-import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
-import com.akaci.twotterbackend.exceptions.UsernameNotValidException;
+import com.akaci.twotterbackend.exceptions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -54,6 +51,14 @@ public class ExceptionController {
     @ExceptionHandler(UserAlreadyFollowedException.class)
     public ResponseEntity<ErrorResponse> userAlreadyFollowed(UserAlreadyFollowedException userAlreadyFollowedException) {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), userAlreadyFollowedException.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+    @ExceptionHandler(UserToFollowNotFoundException.class)
+    public ResponseEntity<ErrorResponse> userToFollowNotFound(UserToFollowNotFoundException userToFollowNotFoundException) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), userToFollowNotFoundException.getMessage(), LocalDateTime.now());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(error);

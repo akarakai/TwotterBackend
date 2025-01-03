@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.persistence.mapper;
 
-import com.akaci.twotterbackend.domain.Profile;
+import com.akaci.twotterbackend.domain.model.Profile;
 import com.akaci.twotterbackend.persistence.entity.ProfileJpaEntity;
 
 public class ProfileEntityMapper {

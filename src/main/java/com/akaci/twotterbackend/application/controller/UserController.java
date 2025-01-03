@@ -3,7 +3,7 @@ package com.akaci.twotterbackend.application.controller;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
 import com.akaci.twotterbackend.application.service.FollowService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
-import com.akaci.twotterbackend.domain.User;
+import com.akaci.twotterbackend.domain.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api")
@@ -35,7 +37,19 @@ public class UserController {
         String accountName = getAccountUsername();
         // ACCOUNT NAME == USER NAME, If you want to change displayed name, change profile name
         // username and account name cannot be changed
-        User followedUser = followService.follow(accountName, usernameToFollow);
+        User followedUser = followService.followUserByUsername(accountName, usernameToFollow);
+        FollowUserResponse response = new FollowUserResponse(followedUser.getId(), followedUser.getUsername());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    // If the id is not UUID, spring will automatically respond with a 404
+    @PostMapping("user/id/{id}/follow")
+    public ResponseEntity<FollowUserResponse> followUser(@PathVariable(name = "id") UUID idToFollow) {
+        String accountName = getAccountUsername();
+        User followedUser = followService.followUserById(accountName, idToFollow);
         FollowUserResponse response = new FollowUserResponse(followedUser.getId(), followedUser.getUsername());
         return ResponseEntity
                 .status(HttpStatus.OK)
