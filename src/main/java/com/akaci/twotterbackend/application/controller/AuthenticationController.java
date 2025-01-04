@@ -74,6 +74,7 @@ public class AuthenticationController {
 
         Cookie cookie = new Cookie(COOKIE_NAME, jwt);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
 

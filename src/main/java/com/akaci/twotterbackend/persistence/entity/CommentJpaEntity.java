@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,12 +32,29 @@ public class CommentJpaEntity {
     @JoinColumn(name = "author_user_id")
     private UserJpaEntity author;
 
+    @ManyToOne
+    @JoinColumn(name = "twoot_id")
+    private TwootJpaEntity twoot;
+
     @ManyToMany
     @JoinTable(
             name = "comment_likes",
             joinColumns = @JoinColumn(name = "author_user_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id")
     )
-    private Set<UserJpaEntity> likedByUsers;
+    @Builder.Default
+    private Set<UserJpaEntity> likedByUsers = new HashSet<>();
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CommentJpaEntity that = (CommentJpaEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

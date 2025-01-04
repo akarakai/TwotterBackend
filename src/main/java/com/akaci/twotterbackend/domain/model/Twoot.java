@@ -52,7 +52,7 @@ public class Twoot {
     }
 
 
-
+    // MAYBE U DO NOT NEED THIS?
     public void addComment(Comment comment) {
         if (comments.contains(comment)) {
             throw new IllegalArgumentException("Comment already exists");

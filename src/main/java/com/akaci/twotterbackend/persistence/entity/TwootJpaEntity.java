@@ -32,6 +32,10 @@ public class TwootJpaEntity {
     @JoinColumn(name = "author_user_id")
     private UserJpaEntity author;
 
+    @OneToMany(mappedBy = "twoot")
+    @Builder.Default
+    private Set<CommentJpaEntity> comments = new HashSet<>();
+
     @ManyToMany
     @JoinTable(
             name = "twoot_likes",
@@ -40,5 +44,7 @@ public class TwootJpaEntity {
     )
     @Builder.Default
     private Set<UserJpaEntity> likedByUsers = new HashSet<>();
+
+
 
 }

@@ -17,3 +17,7 @@
     Remember: For these types of relationships in JPA, the database state is controlled by the owning side of
     the relationship (@ManyToOne in TwootJpaEntity), not by the collection in the non-owning side
     (@OneToMany in UserJpaEntity).
+
+    - The problem is that crud services must return dto,
+        In particular all services which returns to the controller
+        because mapping to DTO must not be done in the controller
