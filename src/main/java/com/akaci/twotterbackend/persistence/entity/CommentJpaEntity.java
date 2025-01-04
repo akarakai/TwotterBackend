@@ -36,14 +36,12 @@ public class CommentJpaEntity {
     @JoinColumn(name = "twoot_id")
     private TwootJpaEntity twoot;
 
-    @ManyToMany
-    @JoinTable(
-            name = "comment_likes",
-            joinColumns = @JoinColumn(name = "author_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "comment_id")
-    )
+    @ManyToMany(mappedBy = "likedComments")
     @Builder.Default
     private Set<UserJpaEntity> likedByUsers = new HashSet<>();
+
+
+
 
 
     @Override

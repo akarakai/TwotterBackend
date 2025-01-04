@@ -24,8 +24,13 @@ public class User {
 
     @Builder.Default
     private Set<User> followed = new HashSet<>();
+
     @Builder.Default
     private Set<User> followers = new HashSet<>();
+
+    @Builder.Default
+    private Set<Twoot> likedTwoots = new HashSet<>();
+
 
     // Constructor with all attributes
     public User(String username, Profile profile) {
@@ -48,6 +53,32 @@ public class User {
     public void changeUsername(String username) {
         validateName(username);
         this.username = username;
+    }
+
+    // THE USER MAKE THE ACTION O BE LIKED.
+    public void like(Likable likable) {
+        if (likable instanceof Twoot twoot) {
+            if (likedTwoots.contains(twoot)) {
+                throw new IllegalArgumentException("twoot already liked");
+
+            }
+
+            likedTwoots.add(twoot);
+            // update also twoot
+            twoot.addUserWhoLikesTwoot(this);
+
+        }
+    }
+
+    public void removeLike(Likable likable) {
+        if (likable instanceof Twoot twoot) {
+            if (!likedTwoots.contains(twoot)) {
+                throw new IllegalArgumentException("twoot was not liked before");
+            }
+
+            likedTwoots.remove(twoot);
+//            twoot.removeUserWhoLikesTwoot(this);
+        }
     }
 
     // Constructor without the ID (for new users, for example)

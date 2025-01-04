@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @AllArgsConstructor
-public class Comment {
+public class Comment implements Likable {
 
     private final UUID id;
     private final String content;
@@ -26,8 +26,7 @@ public class Comment {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
+        if (!(o instanceof Comment comment)) return false;
         return Objects.equals(id, comment.id);
     }
 

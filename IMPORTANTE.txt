@@ -21,3 +21,6 @@
     - The problem is that crud services must return dto,
         In particular all services which returns to the controller
         because mapping to DTO must not be done in the controller
+
+
+        - RIGUARDA INTERFACCIA LIKABLE PER IL TRUCCHETTO

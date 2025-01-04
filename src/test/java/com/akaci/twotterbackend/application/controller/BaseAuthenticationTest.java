@@ -3,6 +3,7 @@ package com.akaci.twotterbackend.application.controller;
 import com.akaci.twotterbackend.application.dto.request.LogInRequest;
 import com.akaci.twotterbackend.application.dto.request.SignUpRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.Cookie;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +35,8 @@ public class BaseAuthenticationTest {
     @Autowired
     protected MockMvc mockMvc;
 
-    protected ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    protected ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
+            .configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
     protected Cookie jwtDefaultUser;
 
     @BeforeEach

@@ -36,14 +36,27 @@ public class TwootJpaEntity {
     @Builder.Default
     private Set<CommentJpaEntity> comments = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "twoot_likes",
-            joinColumns = @JoinColumn(name = "author_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "twoot_id")
-    )
+    @ManyToMany(mappedBy = "likedTwoots")
     @Builder.Default
     private Set<UserJpaEntity> likedByUsers = new HashSet<>();
+
+
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "twoot_likes",
+//            joinColumns = @JoinColumn(name = "author_user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "twoot_id")
+//    )
+//    @Builder.Default
+//    // the boss of the many to many relation.
+//    // I just need only to update this and persist.
+//    // PROBLEM
+//    // This should not be the boss of the relation, because this set
+//    // will be extremely large . So we have to use mappedBy
+//    private Set<UserJpaEntity> likedByUsers = new HashSet<>();
+
+
 
 
 

@@ -4,7 +4,6 @@ import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +31,11 @@ class TwootControllerTest extends BaseAuthenticationTest {
     private static final String GET_ALL_TWOOTS_ENDPOINT = "/api/twoot/all";
     private static final String POST_TWOOT_ENDPOINT = "/api/twoot/new";
     private static final String POST_COMMENT_ENDPOINT = "/api/twoot/comment";
+    private static final String POST_LIKE_TWOOT_ENDPOINT = "/api/twoot/like";
 
     private static final List<String> NEW_TWOOTS_CONTENT = new ArrayList<>();
+
+
 
     @BeforeEach
     void setUp() throws Exception {
@@ -116,10 +118,57 @@ class TwootControllerTest extends BaseAuthenticationTest {
         assertEquals(response.lastTwootPostedAt(), response.twoots().getFirst().postedAt());
         assertEquals(NEW_TWOOTS_CONTENT.size(), response.twoots().size());
         assertTrue(response.twoots().getFirst().postedAt().isAfter(response.twoots().getLast().postedAt()));
+    }
 
+    @Test
+    void likeTwoot_twootLiked() throws Exception {
+        postAllTwoots();
+        ResultActions ra = mockMvc.perform(MockMvcRequestBuilders
+                        .get(GET_ALL_TWOOTS_ENDPOINT)
+                        .cookie(jwtDefaultUser))
+                .andExpect(status().isOk());
+        TwootAllResponse response = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootAllResponse.class);
+
+        // id twoot to like
+        UUID id = response.twoots().getFirst().id();
+
+        likeTwoot(id).andExpect(status().isOk())
+                .andExpect(jsonPath("$.idContent").value(id.toString()))
+                .andExpect(jsonPath("$.action").value("like-added"));
+    }
+
+    @Test
+    void likeTwoot_twootAlreadyLiked_removedLike() throws Exception {
+        postAllTwoots();
+        ResultActions ra = mockMvc.perform(MockMvcRequestBuilders
+                        .get(GET_ALL_TWOOTS_ENDPOINT)
+                        .cookie(jwtDefaultUser))
+                .andExpect(status().isOk());
+        TwootAllResponse response = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootAllResponse.class);
+
+        // id twoot to like
+        UUID id = response.twoots().getFirst().id();
+
+        likeTwoot(id).andExpect(status().isOk())
+                .andExpect(jsonPath("$.idContent").value(id.toString()))
+                .andExpect(jsonPath("$.action").value("like-added"));
+
+        likeTwoot(id).andExpect(status().isOk())
+                .andExpect(jsonPath("$.idContent").value(id.toString()))
+                .andExpect(jsonPath("$.action").value("like-removed"));
 
 
     }
+
+    private ResultActions likeTwoot(UUID twootId) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/twoot/" + twootId.toString() + "/like")
+                .cookie(jwtDefaultUser));
+    }
+
+
+
+
 
 
 

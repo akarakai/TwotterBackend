@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @AllArgsConstructor
-public class Twoot {
+public class Twoot implements Likable {
 
     private static final Logger LOGGER = LogManager.getLogger(Twoot.class);
     private static final int MAX_CONTENT_LENGTH = 300;
@@ -27,9 +27,10 @@ public class Twoot {
     private final LocalDateTime postedAt;
 
     @Builder.Default
-    private final Set<Comment> comments = new HashSet<>();
+    private Set<Comment> comments = new HashSet<>();
+
     @Builder.Default
-    private final Set<User> likedByUsers = new HashSet<>();
+    private Set<User> likedByUsers = new HashSet<>();
 
     public Twoot(User author, String content) {
         this.id = UUID.randomUUID();
@@ -52,6 +53,22 @@ public class Twoot {
     }
 
 
+    public void addUserWhoLikesTwoot(User user) {
+        if (likedByUsers.contains(user)) {
+            throw new IllegalArgumentException("user already liked twoot");
+        }
+        likedByUsers.add(user);
+    }
+
+    // THIS NOT NEEDED? FOR NOW. Action is on the hand of the user
+    public void removeUserWhoLikesTwoot(User user) {
+        if (!likedByUsers.contains(user)) {
+            throw new IllegalArgumentException("user not liked twoot");
+        }
+        likedByUsers.remove(user);
+    }
+
+
     // MAYBE U DO NOT NEED THIS?
     public void addComment(Comment comment) {
         if (comments.contains(comment)) {
@@ -68,8 +85,7 @@ public class Twoot {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Twoot twoot = (Twoot) o;
+        if (!(o instanceof Twoot twoot)) return false;
         return Objects.equals(id, twoot.id);
     }
 

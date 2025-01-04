@@ -49,13 +49,27 @@ public class UserJpaEntity {
     @Builder.Default
     private Set<CommentJpaEntity> comments = new HashSet<>();
 
-    @ManyToMany(mappedBy = "likedByUsers")
+    @ManyToMany
+    @JoinTable(
+            name = "twoot_likes",
+            joinColumns = @JoinColumn(name = "twoot_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_user_id")
+    )
     @Builder.Default
     private Set<TwootJpaEntity> likedTwoots = new HashSet<>();
 
-    @ManyToMany(mappedBy = "likedByUsers")
+
+    @ManyToMany
+    @JoinTable(
+            name = "comment_likes",
+            joinColumns = @JoinColumn(name = "comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_user_id")
+    )
     @Builder.Default
     private Set<CommentJpaEntity> likedComments = new HashSet<>();
+
+
+
 
     public UserJpaEntity(UUID id, String username, ProfileJpaEntity profile) {
         this.id = id;
