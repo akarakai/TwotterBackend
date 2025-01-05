@@ -14,7 +14,12 @@ public class CommentLikeDomainServiceImpl implements LikeDomainService {
 
 
     @Override
-    public void like(User user, Likable likable) {
+    public void like(User user, Likable likableComment) {
+        if (user.getLikedComments().contains(likableComment)) {
+            user.removeLike(likableComment);
+            return;
+        }
 
+        user.like(likableComment);
     }
 }

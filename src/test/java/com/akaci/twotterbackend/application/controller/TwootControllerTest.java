@@ -32,7 +32,6 @@ class TwootControllerTest extends BaseAuthenticationTest {
     private static final String GET_ALL_TWOOTS_ENDPOINT = "/api/twoot/all";
     private static final String POST_TWOOT_ENDPOINT = "/api/twoot/new";
     private static final String POST_COMMENT_ENDPOINT = "/api/twoot/comment";
-    private static final String POST_LIKE_TWOOT_ENDPOINT = "/api/twoot/like";
 
     private static final List<String> NEW_TWOOTS_CONTENT = new ArrayList<>();
 
@@ -50,7 +49,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
 
     private void postAllTwoots() throws Exception {
         for (String twootRequest : NEW_TWOOTS_CONTENT) {
-            performPostTwootRequest(TWOOT_CONTENT);
+            performPostTwootRequest(twootRequest);
         }
     }
 

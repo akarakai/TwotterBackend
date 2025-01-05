@@ -31,6 +31,9 @@ public class User {
     @Builder.Default
     private Set<Twoot> likedTwoots = new HashSet<>();
 
+    @Builder.Default
+    private Set<Comment> likedComments = new HashSet<>();
+
 
     // Constructor with all attributes
     public User(String username, Profile profile) {
@@ -62,11 +65,17 @@ public class User {
                 throw new IllegalArgumentException("twoot already liked");
 
             }
-
             likedTwoots.add(twoot);
             // update also twoot
             twoot.addUserWhoLikesTwoot(this);
 
+        }
+        if (likable instanceof Comment comment) {
+            if (likedComments.contains(comment)) {
+                throw new IllegalArgumentException("comment already liked");
+            }
+            likedComments.add(comment);
+            comment.addUserWhoLikesComment(this);
         }
     }
 
@@ -77,6 +86,7 @@ public class User {
             }
 
             likedTwoots.remove(twoot);
+            // TODO THIS DOUBLE RELATION
 //            twoot.removeUserWhoLikesTwoot(this);
         }
     }

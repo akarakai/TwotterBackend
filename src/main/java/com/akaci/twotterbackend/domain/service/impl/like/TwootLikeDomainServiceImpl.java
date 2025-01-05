@@ -20,6 +20,7 @@ public class TwootLikeDomainServiceImpl implements LikeDomainService {
             user.removeLike(likeableTwoot);
             return;
         }
+
         user.like(likeableTwoot);
     }
 }

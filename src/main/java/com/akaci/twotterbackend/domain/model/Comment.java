@@ -24,6 +24,21 @@ public class Comment implements Likable {
     private Twoot twoot;
     private LocalDateTime postedAt;
 
+
+
+    public void addUserWhoLikesComment(User user) {
+        if (likedByUsers.contains(user)) {
+            throw new IllegalArgumentException("user already liked twoot");
+        }
+        likedByUsers.add(user);
+    }
+
+
+
+
+
+
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Comment comment)) return false;
