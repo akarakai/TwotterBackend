@@ -1,6 +1,7 @@
 package com.akaci.twotterbackend.application.service.impl;
 
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
+import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.application.service.LikeService;
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.domain.model.Twoot;
@@ -77,11 +78,11 @@ public class TwootLikeService implements LikeService  {
             // add the user to the liked in the twoot
             userEntity.getLikedTwoots().add(twootEntity);
             userRepository.save(userEntity);
-            return new LikeResponse(twootId.toString(), CONTENT_TYPE_TO_LIKE, "like-added");
+            return new LikeResponse(twootId.toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.ADDED);
 
         }
 
-        return new LikeResponse(twootId.toString(), CONTENT_TYPE_TO_LIKE, "like-removed");
+        return new LikeResponse(twootId.toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.REMOVED);
 
 
 

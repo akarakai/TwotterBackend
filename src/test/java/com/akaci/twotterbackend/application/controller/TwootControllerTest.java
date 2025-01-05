@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
+import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import org.apache.logging.log4j.LogManager;
@@ -134,7 +135,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
 
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
-                .andExpect(jsonPath("$.action").value("like-added"));
+                .andExpect(jsonPath("$.likeResult").value(LikeStatus.ADDED.toString()));
     }
 
     @Test
@@ -151,11 +152,11 @@ class TwootControllerTest extends BaseAuthenticationTest {
 
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
-                .andExpect(jsonPath("$.action").value("like-added"));
+                .andExpect(jsonPath("$.likeResult").value(LikeStatus.ADDED.toString()));
 
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
-                .andExpect(jsonPath("$.action").value("like-removed"));
+                .andExpect(jsonPath("$.likeResult").value(LikeStatus.REMOVED.toString()));
 
 
     }

@@ -6,6 +6,6 @@ import java.util.UUID;
 public record LikeResponse(
         String idContent,
         String contentType,
-        String action
+        LikeStatus likeResult
 ) {
 }
