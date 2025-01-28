@@ -4,6 +4,7 @@ import com.akaci.twotterbackend.application.dto.request.LogInRequest;
 import com.akaci.twotterbackend.application.dto.response.LogInResponse;
 import com.akaci.twotterbackend.application.dto.response.SignUpResponse;
 import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
+import com.akaci.twotterbackend.exceptions.LoginExeption;
 import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
 import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import com.akaci.twotterbackend.security.authentication.jwt.JwtUtil;
@@ -18,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -63,7 +66,12 @@ public class AuthenticationController {
         // I don't like use this complexity in a controller. There is even checked errors. Because of the presence of JwtUtil
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
-        Authentication auth = this.authenticationManager.authenticate(authenticationRequest);
+        Authentication auth;
+        try {
+            auth = this.authenticationManager.authenticate(authenticationRequest);
+        } catch (AuthenticationException e) {
+            throw new LoginExeption();
+        }
         String username = auth.getName();
         if (auth.isAuthenticated()) {
             accountCrudService.updateLastLoggedIn(username);

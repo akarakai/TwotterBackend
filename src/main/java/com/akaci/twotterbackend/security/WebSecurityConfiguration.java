@@ -32,11 +32,46 @@ public class WebSecurityConfiguration {
         this.jwtFilter = jwtFilter;
     }
 
+
+
+    private CorsConfigurationSource createCorsConfig() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:4200");
+        configuration.addAllowedOrigin("http://localhost:9090");
+        configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://localhost:3003");
+        configuration.addAllowedOrigin("http://localhost:3002");
+        configuration.addAllowedOrigin("http://localhost:3001");
+
+
+        configuration.addAllowedOrigin("http://127.0.0.1:3000");
+        configuration.addAllowedOrigin("http://10.255.255.254:3000");
+
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+        configuration.setAllowedHeaders(List.of("*"));
+//        configuration.addExposedHeader("*");
+        configuration.addExposedHeader("X-Twotter-User"); // Expose the specific header
+        configuration.addExposedHeader("Content-Type"); // Expose the specific header
+
+
+        configuration.setAllowCredentials(true); // Add this if you need to handle cookies or credentials
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+
+    }
+
+
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         // for now I use the basic authentication
         http.httpBasic(Customizer.withDefaults());
+        http.cors(cors -> cors.configurationSource(createCorsConfig()));
 
         // TODO play with this option
         http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

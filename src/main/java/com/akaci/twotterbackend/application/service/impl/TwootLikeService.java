@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service("twoot-like-service")
 public class TwootLikeService implements LikeService {
+
     private static final String CONTENT_TYPE_TO_LIKE = "twoot";
 
     private final LikeDomainService likeDomainService;
@@ -48,17 +49,20 @@ public class TwootLikeService implements LikeService {
         User user = mapToUserModel(userEntity);
         Twoot twoot = mapToTwootModel(twootId);
 
-        int initialLikeCount = userEntity.getLikedTwoots().size();
+//        int initialLikeCount = userEntity.getLikedTwoots().size();
+        int initialLikeCount = twootEntity.getLikedByUsers().size();
+
         likeDomainService.like(user, twoot);
 
-        if (shouldUpdateLike(userEntity, initialLikeCount)) {
+        if (shouldUpdateLike(twootEntity, initialLikeCount)) {
             return addLike(userEntity, twootEntity);
         }
 
-        return new LikeResponse(twootId.toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.REMOVED);
+        return removeLike(userEntity, twootEntity);
     }
 
     private User mapToUserModel(UserJpaEntity userEntity) {
+
         Set<Twoot> likedTwoots = userEntity.getLikedTwoots().stream()
                 .map(t -> Twoot.builder()
                         .id(t.getId())
@@ -77,14 +81,20 @@ public class TwootLikeService implements LikeService {
                 .build();
     }
 
-    private boolean shouldUpdateLike(UserJpaEntity userEntity, int initialLikeCount) {
-        return initialLikeCount < userEntity.getLikedTwoots().size() || initialLikeCount == 0;
+    private boolean shouldUpdateLike(TwootJpaEntity twootJpa, int initialLikeCount) {
+        return initialLikeCount < twootJpa.getLikedByUsers().size() || initialLikeCount == 0;
     }
 
     private LikeResponse addLike(UserJpaEntity userEntity, TwootJpaEntity twootEntity) {
         userEntity.getLikedTwoots().add(twootEntity);
         userRepository.save(userEntity);
         return new LikeResponse(twootEntity.getId().toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.ADDED);
+    }
+
+    private LikeResponse removeLike(UserJpaEntity userEntity, TwootJpaEntity twootEntity) {
+        userEntity.getLikedTwoots().remove(twootEntity);
+        userRepository.save(userEntity);
+        return new LikeResponse(twootEntity.getId().toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.REMOVED);
     }
 
     private UserJpaEntity getUserEntity(String username) {

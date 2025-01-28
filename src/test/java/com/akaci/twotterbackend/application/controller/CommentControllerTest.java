@@ -8,15 +8,12 @@ import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +23,7 @@ class CommentControllerTest extends BaseAuthenticationTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TwootControllerTest.class);
 
-    private static final String POST_TWOOT_ENDPOINT = "/api/twoot/new";
+    private static final String POST_TWOOT_ENDPOINT = "/api/twoot";
     private static final String POST_COMMENT_ENDPOINT = "/api/twoot/comment";
     private static final String CONTENT_TYPE_TO_LIKE = "comment";
 
@@ -65,7 +62,7 @@ class CommentControllerTest extends BaseAuthenticationTest {
 
         assertEquals(commentId.toString(), lr.idContent());
         assertEquals(LikeStatus.ADDED, lr.likeResult());
-        assertEquals(CONTENT_TYPE_TO_LIKE, lr.contentType());
+        assertEquals(CONTENT_TYPE_TO_LIKE, lr.type());
     }
 
     @Test
@@ -76,7 +73,7 @@ class CommentControllerTest extends BaseAuthenticationTest {
         LikeResponse lr = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), LikeResponse.class);
         assertEquals(commentId.toString(), lr.idContent());
         assertEquals(LikeStatus.REMOVED, lr.likeResult());
-        assertEquals(CONTENT_TYPE_TO_LIKE, lr.contentType());
+        assertEquals(CONTENT_TYPE_TO_LIKE, lr.type());
     }
 
 

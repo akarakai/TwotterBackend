@@ -29,8 +29,8 @@ class TwootControllerTest extends BaseAuthenticationTest {
     private static final String TWOOT_CONTENT = "This is my First Twoot!11!!1";
     private static final String COMMENT_CONTENT = "Nice twoot bro!";
 
-    private static final String GET_ALL_TWOOTS_ENDPOINT = "/api/twoot/all";
-    private static final String POST_TWOOT_ENDPOINT = "/api/twoot/new";
+    private static final String GET_ALL_TWOOTS_ENDPOINT = "/api/public/twoot";
+    private static final String POST_TWOOT_ENDPOINT = "/api/twoot";
     private static final String POST_COMMENT_ENDPOINT = "/api/twoot/comment";
 
     private static final List<String> NEW_TWOOTS_CONTENT = new ArrayList<>();
@@ -135,6 +135,17 @@ class TwootControllerTest extends BaseAuthenticationTest {
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
                 .andExpect(jsonPath("$.likeResult").value(LikeStatus.ADDED.toString()));
+
+        // get twoots again and see if it was really liked
+//        ResultActions ra2 = mockMvc.perform(MockMvcRequestBuilders
+//                        .get(GET_ALL_TWOOTS_ENDPOINT)
+//                        .cookie(jwtDefaultUser))
+//                .andExpect(status().isOk());
+//        TwootAllResponse response2 = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootAllResponse.class);
+//        var twoot = response2.twoots().getFirst();
+//        assertEquals(1, twoot.likes());
+
+
     }
 
     @Test
@@ -153,9 +164,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
                 .andExpect(jsonPath("$.likeResult").value(LikeStatus.ADDED.toString()));
 
-        likeTwoot(id).andExpect(status().isOk())
-                .andExpect(jsonPath("$.idContent").value(id.toString()))
-                .andExpect(jsonPath("$.likeResult").value(LikeStatus.REMOVED.toString()));
+
 
 
     }

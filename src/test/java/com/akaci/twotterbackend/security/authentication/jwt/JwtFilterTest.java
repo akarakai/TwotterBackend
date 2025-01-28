@@ -32,7 +32,7 @@ class JwtFilterTest {
     private static final String VALID_USERNAME = "username1998";
     private static final String VALID_PASSWORD = "password1998";
     private static final String SECURED_ENDPOINT = "/api/auth/test";
-    private static final String ACCOUNT_CREATE_ENDPOINT = "/api/public/account/create";
+    private static final String ACCOUNT_CREATE_ENDPOINT = "/api/public/account";
     private static final Collection<GrantedAuthority> USER_AUTHORITY = Collections.singletonList(new GrantedAuthorityImpl(Role.USER));
     private static final String COOKIE_NAME = "jwt-token";
 

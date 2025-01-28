@@ -27,6 +27,14 @@ public class ExceptionController {
                 .body(error);
     }
 
+    @ExceptionHandler(LoginExeption.class)
+    public ResponseEntity<ErrorResponse> handleLoginException(LoginExeption ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+    }
+
 
 
 

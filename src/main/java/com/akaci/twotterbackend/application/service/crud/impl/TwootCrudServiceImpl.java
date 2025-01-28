@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +59,15 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     @Override
     public TwootAllResponse getAllTwoots() {
         List<TwootResponse> allTwoots = twootRepository.findAllTwootsWithCounts();
+        // error when twoot list empty
+        if (allTwoots.isEmpty()) {
+            return new TwootAllResponse(
+                    0,
+                    null,
+                    allTwoots
+
+            );
+        }
         return new TwootAllResponse(
                 allTwoots.size(),
                 allTwoots.getFirst().postedAt(),

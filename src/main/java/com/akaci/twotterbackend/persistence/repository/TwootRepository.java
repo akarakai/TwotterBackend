@@ -33,7 +33,8 @@ public interface TwootRepository extends CrudRepository<TwootJpaEntity, UUID> {
     """)
     int findNumberOfComments(UUID twootId);
 
-    // via AI chat. This is a DTO projection
+    // IL PROBLEMA E'CHE CI SERVE IL
+    // LIKED BY USER< QUINDI QUESTO TOCCA TOGLIERE
     @Query("""
         SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse(
             t.id, 
@@ -46,5 +47,10 @@ public interface TwootRepository extends CrudRepository<TwootJpaEntity, UUID> {
         ORDER BY t.postedAt DESC
         """)
     List<TwootResponse> findAllTwootsWithCounts();
+
+    @Query("""
+        SELECT SIZE(t.likedByUsers) FROM TwootJpaEntity t WHERE t.id = :twootId
+    """)
+    Integer getNumberOfLikes(UUID twootId);
 
 }

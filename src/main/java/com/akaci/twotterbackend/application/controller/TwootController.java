@@ -9,7 +9,6 @@ import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.application.service.LikeService;
 import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
 import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
-import com.akaci.twotterbackend.application.service.impl.TwootLikeService;
 import com.akaci.twotterbackend.domain.model.Comment;
 import com.akaci.twotterbackend.domain.model.Twoot;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +41,8 @@ public class TwootController {
     }
 
     // TODO SHOULD I LEAVE THIS PRIVATE OR PUBLIC? FOR NOW PRIVATE
-    @GetMapping("twoot/all")
+    // for testing for now I put in public
+    @GetMapping("public/twoot")
     public ResponseEntity<TwootAllResponse> getAllTwoots() {
         TwootAllResponse response = twootCrudService.getAllTwoots();
         return ResponseEntity
@@ -52,7 +52,7 @@ public class TwootController {
     }
 
 
-    @PostMapping("twoot/new")
+    @PostMapping("twoot")
     public ResponseEntity<TwootResponse> postNewTwoot(@RequestBody TwootRequest twootRequest) {
         String username = getAccountUsername();
         String content = twootRequest.content();

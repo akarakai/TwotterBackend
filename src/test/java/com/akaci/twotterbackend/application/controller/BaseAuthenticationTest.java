@@ -28,7 +28,7 @@ public class BaseAuthenticationTest {
 
     protected static final String VALID_USERNAME = "username1998";
     protected static final String VALID_PASSWORD = "password1998";
-    protected static final String ACCOUNT_CREATE_ENDPOINT = "/api/public/account/create";
+    protected static final String ACCOUNT_CREATE_ENDPOINT = "/api/public/account";
     protected static final String LOGIN_ENDPOINT = "/api/auth/login";
     protected static final String JWT_COOKIE_NAME = "jwt-token";
 

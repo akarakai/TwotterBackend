@@ -22,7 +22,7 @@ public class AccountController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("public/account/create")
+    @PostMapping("public/account")
     public ResponseEntity<SignUpResponse> createAccount(@RequestBody SignUpRequest signUpRequest) {
         String username = signUpRequest.username();
         String password = signUpRequest.password();
