@@ -10,6 +10,7 @@ import com.akaci.twotterbackend.domain.service.LikeDomainService;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.TwootRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -47,14 +48,15 @@ public class TwootLikeService implements LikeService {
         TwootJpaEntity twootEntity = getTwootToLike(twootId);
 
         User user = mapToUserModel(userEntity);
-        Twoot twoot = mapToTwootModel(twootId);
+        Twoot twoot = mapToTwootModel(twootEntity);
 
 //        int initialLikeCount = userEntity.getLikedTwoots().size();
-        int initialLikeCount = twootEntity.getLikedByUsers().size();
+        int initialLikeCount = twoot.getLikedByUsers().size();
 
         likeDomainService.like(user, twoot);
 
-        if (shouldUpdateLike(twootEntity, initialLikeCount)) {
+        // in teoria su should devo controllare twoot, perche e'lui che e'cambiato
+        if (shouldUpdateLike(twoot, initialLikeCount)) {
             return addLike(userEntity, twootEntity);
         }
 
@@ -75,14 +77,15 @@ public class TwootLikeService implements LikeService {
                 .build();
     }
 
-    private Twoot mapToTwootModel(UUID twootId) {
+    private Twoot mapToTwootModel(TwootJpaEntity twootEntity) {
         return Twoot.builder()
-                .id(twootId)
+                .id(twootEntity.getId())
+                .likedByUsers(UserEntityMapper.setToDomain(twootEntity.getLikedByUsers()))
                 .build();
     }
 
-    private boolean shouldUpdateLike(TwootJpaEntity twootJpa, int initialLikeCount) {
-        return initialLikeCount < twootJpa.getLikedByUsers().size() || initialLikeCount == 0;
+    private boolean shouldUpdateLike(Twoot twoot, int initialLikeCount) {
+        return initialLikeCount < twoot.getLikedByUsers().size() || initialLikeCount == 0;
     }
 
     private LikeResponse addLike(UserJpaEntity userEntity, TwootJpaEntity twootEntity) {

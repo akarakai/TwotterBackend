@@ -3,6 +3,7 @@ package com.akaci.twotterbackend.application.service.crud.impl;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
+import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.commonValidator.TwootCommentValidator;
 import com.akaci.twotterbackend.domain.model.Twoot;
 import com.akaci.twotterbackend.domain.model.User;
@@ -19,11 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+
+// replace repos with services.
 @Service
 public class TwootCrudServiceImpl implements TwootCrudService {
 
@@ -31,10 +32,12 @@ public class TwootCrudServiceImpl implements TwootCrudService {
 
     private final TwootRepository twootRepository;
     private final UserRepository userRepository;
+    private final UserCrudService userCrudService;
 
-    public TwootCrudServiceImpl(TwootRepository twootRepository, UserRepository userRepository) {
+    public TwootCrudServiceImpl(TwootRepository twootRepository, UserRepository userRepository, UserCrudService userCrudService) {
         this.twootRepository = twootRepository;
         this.userRepository = userRepository;
+        this.userCrudService = userCrudService;
     }
 
 
@@ -75,23 +78,33 @@ public class TwootCrudServiceImpl implements TwootCrudService {
         );
 
 
-        // TODO TRY THIS CODE TO SEE HOW MUCH IT DESTROYS THE DATABASE
-//        List<TwootJpaEntity> allTwoots = twootRepository.findAllOrderedByTime();
-//        int totalTwoots = allTwoots.size();
-//        LocalDateTime firstTwootPostedAt = allTwoots.getFirst().getPostedAt();
-//
-//        return new TwootAllResponse(
-//                totalTwoots,
-//                firstTwootPostedAt,
-//                allTwoots.stream().map(t -> new TwootResponse(
-//                        t.getId(),
-//                        t.getAuthor().getUsername(),
-//                        t.getContent(),
-//                        t.getLikedByUsers().size(),
-//                        t.getComments().size(),
-//                        t.getPostedAt()
-//                )).toList()
-//        );
+
+    }
+
+    @Override
+    public TwootAllResponse getAllTwoots(String username) {
+        UUID userId = userCrudService.findByUsername(username).getId();
+        List<TwootResponse> allTwoots = twootRepository.findAllTwootsWithCounts();
+        Set<UUID> likedByUser = twootRepository.findLikedTwootsIdByUserId(userId);
+        List<TwootResponse> allTwootsWithLiked = allTwoots.stream()
+                .map(twoot -> new TwootResponse(
+                        twoot.id(),
+                        twoot.author(),
+                        twoot.content(),
+                        twoot.likes(),
+                        twoot.commentNumber(),
+                        twoot.postedAt(),
+                        likedByUser.contains(twoot.id())
+                ))
+                .toList();
+
+        return new TwootAllResponse(
+                allTwootsWithLiked.size(),
+                allTwoots.getFirst().postedAt(),
+                allTwootsWithLiked
+        );
+
+
 
     }
 

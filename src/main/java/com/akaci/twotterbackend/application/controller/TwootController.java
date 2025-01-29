@@ -9,6 +9,7 @@ import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.application.service.LikeService;
 import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
 import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
+import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.model.Comment;
 import com.akaci.twotterbackend.domain.model.Twoot;
 import org.apache.logging.log4j.LogManager;
@@ -32,12 +33,14 @@ public class TwootController {
     private final TwootCrudService twootCrudService;
     private final CommentCrudService commentCrudService;
     private final LikeService twootLikeService;
+    private final UserCrudService userCrudService;
 
     public TwootController(TwootCrudService twootCrudService, CommentCrudService commentCrudService,
-                           @Qualifier("twoot-like-service") LikeService twootLikeService) {
+                           @Qualifier("twoot-like-service") LikeService twootLikeService, UserCrudService userCrudService) {
         this.twootCrudService = twootCrudService;
         this.commentCrudService = commentCrudService;
         this.twootLikeService = twootLikeService;
+        this.userCrudService = userCrudService;
     }
 
     // TODO SHOULD I LEAVE THIS PRIVATE OR PUBLIC? FOR NOW PRIVATE
@@ -45,6 +48,16 @@ public class TwootController {
     @GetMapping("public/twoot")
     public ResponseEntity<TwootAllResponse> getAllTwoots() {
         TwootAllResponse response = twootCrudService.getAllTwoots();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("twoot")
+    public ResponseEntity<TwootAllResponse> getAllTwootsAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TwootAllResponse response = twootCrudService.getAllTwoots(authentication.getName());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,7 +76,8 @@ public class TwootController {
                 newTwoot.getContent(),
                 0,
                 0,
-                newTwoot.getPostedAt()
+                newTwoot.getPostedAt(),
+                false
         );
 
         return ResponseEntity

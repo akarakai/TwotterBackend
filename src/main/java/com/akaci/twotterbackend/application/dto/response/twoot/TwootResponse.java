@@ -9,6 +9,7 @@ public record TwootResponse(
         String content,
         int likes,
         int commentNumber,
-        LocalDateTime postedAt
+        LocalDateTime postedAt,
+        boolean likedByUser
 ) {
 }
