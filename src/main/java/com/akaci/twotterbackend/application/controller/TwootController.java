@@ -46,13 +46,34 @@ public class TwootController {
     // TODO SHOULD I LEAVE THIS PRIVATE OR PUBLIC? FOR NOW PRIVATE
     // for testing for now I put in public
     @GetMapping("public/twoot")
-    public ResponseEntity<TwootAllResponse> getAllTwoots() {
+    public ResponseEntity<TwootAllResponse> getAllTwoots(UUID twootId) {
         TwootAllResponse response = twootCrudService.getAllTwoots();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
+
+    @GetMapping("public/twoot/{twootId}")
+    public ResponseEntity<TwootResponse> getTwoot(@PathVariable UUID twootId) {
+        TwootResponse response = twootCrudService.getTwoot(twootId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("twoot/{twootId}")
+    public ResponseEntity<TwootResponse> getTwootAuth(@PathVariable UUID twootId) {
+        String username = getAccountUsername();
+        TwootResponse response = twootCrudService.getTwoot(twootId, username);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+
 
     @GetMapping("twoot")
     public ResponseEntity<TwootAllResponse> getAllTwootsAuthenticated() {

@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.application.service.crud.impl;
 
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;
+import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.commonValidator.TwootCommentValidator;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service

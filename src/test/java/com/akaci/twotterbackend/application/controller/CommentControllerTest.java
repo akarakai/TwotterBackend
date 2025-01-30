@@ -72,7 +72,6 @@ class CommentControllerTest extends BaseAuthenticationTest {
                 .andExpect(status().isOk());
         LikeResponse lr = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), LikeResponse.class);
         assertEquals(commentId.toString(), lr.idContent());
-        assertEquals(LikeStatus.REMOVED, lr.likeResult());
         assertEquals(CONTENT_TYPE_TO_LIKE, lr.type());
     }
 

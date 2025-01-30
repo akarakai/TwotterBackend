@@ -82,6 +82,41 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     }
 
     @Override
+    public TwootResponse getTwoot(UUID id, String username) {
+        Optional<TwootJpaEntity> twootEntity = twootRepository.findById(id);
+        if (twootEntity.isEmpty()) throw new BadRequestExceptionResponse("Twoot not found");
+        TwootJpaEntity twootJpaEntity = twootEntity.get();
+        Set<UserJpaEntity> usersWhoLikedTwoot = twootJpaEntity.getLikedByUsers();
+        boolean isLikedByUser = usersWhoLikedTwoot.stream().anyMatch(usr -> usr.getUsername().equals(username));
+        return new TwootResponse(
+                twootJpaEntity.getId(),
+                twootJpaEntity.getAuthor().getUsername(),
+                twootJpaEntity.getContent(),
+                twootJpaEntity.getLikedByUsers().size(),
+                twootJpaEntity.getComments().size(),
+                twootJpaEntity.getPostedAt(),
+                isLikedByUser
+        );
+
+    }
+
+    @Override
+    public TwootResponse getTwoot(UUID id) {
+        Optional<TwootJpaEntity> twootEntity = twootRepository.findById(id);
+        if (twootEntity.isEmpty()) throw new BadRequestExceptionResponse("TWOOT not found");
+        TwootJpaEntity twootJpaEntity = twootEntity.get();
+        return new TwootResponse(
+            twootJpaEntity.getId(),
+            twootJpaEntity.getAuthor().getUsername(),
+            twootJpaEntity.getContent(),
+            twootJpaEntity.getLikedByUsers().size(),
+            twootJpaEntity.getComments().size(),
+            twootJpaEntity.getPostedAt(),
+            false
+        );
+    }
+
+    @Override
     public TwootAllResponse getAllTwoots(String username) {
         UUID userId = userCrudService.findByUsername(username).getId();
         List<TwootResponse> allTwoots = twootRepository.findAllTwootsWithCounts();

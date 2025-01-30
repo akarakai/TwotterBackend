@@ -31,7 +31,6 @@ public class CommentController {
         this.commentCrudService = commentCrudService;
     }
 
-    // NON SO SE VA BENE QUERY
     @GetMapping("comment")
     public ResponseEntity<CommentsOfTwootResponse> getCommentsOfTwoot(@RequestParam("twoot_id") UUID twootId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
