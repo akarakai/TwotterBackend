@@ -55,6 +55,7 @@ class UserControllerTest extends BaseAuthenticationTest {
         return "/api/user/id/" + id.toString() + "/unfollow";
     }
 
+
     @Test
     void followUser_validUsernames_userFollowed() throws Exception {
         performFollowRequest(ANOTHER_USERNAME)

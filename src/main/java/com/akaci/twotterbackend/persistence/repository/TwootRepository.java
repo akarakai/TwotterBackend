@@ -35,33 +35,33 @@ public interface TwootRepository extends CrudRepository<TwootJpaEntity, UUID> {
     int findNumberOfComments(UUID twootId);
 
 
-    @Query("""
-        SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse(
-            t.id, 
-            t.author.username,
-            t.content,
-            SIZE(t.likedByUsers),
-            SIZE(t.comments),
-            t.postedAt, false)
-        FROM TwootJpaEntity t
-        ORDER BY t.postedAt DESC
-        """)
-    List<TwootResponse> findAllTwootsWithCounts();
-
-    @Query("""
-
-            SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse(
-            t.id,
-            t.author.username,
-            t.content,
-            SIZE(t.likedByUsers),
-            SIZE(t.comments),
-            t.postedAt,
-            CASE WHEN :userId IN (SELECT u.id FROM t.likedByUsers u) THEN true ELSE false END)
-        FROM TwootJpaEntity t
-        ORDER BY t.postedAt DESC
-        """)
-    List<TwootResponse> findAllTwootsWithCountsAndLikedByUser(UUID userID);
+//    @Query("""
+//        SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse(
+//            t.id,
+//            t.author.username,
+//            t.content,
+//            SIZE(t.likedByUsers),
+//            SIZE(t.comments),
+//            t.postedAt, false)
+//        FROM TwootJpaEntity t
+//        ORDER BY t.postedAt DESC
+//        """)
+//    List<TwootResponse> findAllTwootsWithCounts();
+//
+//    @Query("""
+//
+//            SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse(
+//            t.id,
+//            t.author.username,
+//            t.content,
+//            SIZE(t.likedByUsers),
+//            SIZE(t.comments),
+//            t.postedAt,
+//            CASE WHEN :userId IN (SELECT u.id FROM t.likedByUsers u) THEN true ELSE false END)
+//        FROM TwootJpaEntity t
+//        ORDER BY t.postedAt DESC
+//        """)
+//    List<TwootResponse> findAllTwootsWithCountsAndLikedByUser(UUID userID);
 
     @Query("""
         SELECT SIZE(t.likedByUsers) FROM TwootJpaEntity t WHERE t.id = :twootId

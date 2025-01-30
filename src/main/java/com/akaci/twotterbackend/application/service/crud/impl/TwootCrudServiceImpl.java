@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.application.service.crud.impl;
 
+import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
@@ -61,36 +62,35 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     // TODO MAYBE IT IS HEAVY
     @Override
     public TwootAllResponse getAllTwoots() {
-        List<TwootResponse> allTwoots = twootRepository.findAllTwootsWithCounts();
-        // error when twoot list empty
-        if (allTwoots.isEmpty()) {
-            return new TwootAllResponse(
-                    0,
-                    null,
-                    allTwoots
-
-            );
-        }
+        List<TwootJpaEntity> allTwoots = (List<TwootJpaEntity>) twootRepository.findAll();
+        List<TwootResponse> twoots = allTwoots.stream()
+                .map(twJpa -> new TwootResponse(
+                       twJpa.getId(),
+                       new UserResponse(twJpa.getAuthor().getId(), twJpa.getAuthor().getUsername(), false),
+                       twJpa.getContent(),
+                       twJpa.getLikedByUsers().size(),
+                       twJpa.getComments().size(),
+                       twJpa.getPostedAt(),
+                       false
+                )).toList();
         return new TwootAllResponse(
-                allTwoots.size(),
-                allTwoots.getFirst().postedAt(),
-                allTwoots
+                twoots.size(),
+                twoots.getFirst().postedAt(),
+                twoots
         );
-
-
-
     }
 
     @Override
     public TwootResponse getTwoot(UUID id, String username) {
         Optional<TwootJpaEntity> twootEntity = twootRepository.findById(id);
+        Set<UserJpaEntity> followed = userRepository.findFollowed(username);
         if (twootEntity.isEmpty()) throw new BadRequestExceptionResponse("Twoot not found");
         TwootJpaEntity twootJpaEntity = twootEntity.get();
         Set<UserJpaEntity> usersWhoLikedTwoot = twootJpaEntity.getLikedByUsers();
         boolean isLikedByUser = usersWhoLikedTwoot.stream().anyMatch(usr -> usr.getUsername().equals(username));
         return new TwootResponse(
                 twootJpaEntity.getId(),
-                twootJpaEntity.getAuthor().getUsername(),
+                new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), isAuthorFollowed(twootJpaEntity.getAuthor().getId(), followed)),
                 twootJpaEntity.getContent(),
                 twootJpaEntity.getLikedByUsers().size(),
                 twootJpaEntity.getComments().size(),
@@ -107,7 +107,7 @@ public class TwootCrudServiceImpl implements TwootCrudService {
         TwootJpaEntity twootJpaEntity = twootEntity.get();
         return new TwootResponse(
             twootJpaEntity.getId(),
-            twootJpaEntity.getAuthor().getUsername(),
+            new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), false),
             twootJpaEntity.getContent(),
             twootJpaEntity.getLikedByUsers().size(),
             twootJpaEntity.getComments().size(),
@@ -119,27 +119,30 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     @Override
     public TwootAllResponse getAllTwoots(String username) {
         UUID userId = userCrudService.findByUsername(username).getId();
-        List<TwootResponse> allTwoots = twootRepository.findAllTwootsWithCounts();
+        Set<UserJpaEntity> followed = userRepository.findFollowed(username);
+        List<TwootJpaEntity> allTwoots = (List<TwootJpaEntity>) twootRepository.findAll();
         Set<UUID> likedByUser = twootRepository.findLikedTwootsIdByUserId(userId);
         List<TwootResponse> allTwootsWithLiked = allTwoots.stream()
                 .map(twoot -> new TwootResponse(
-                        twoot.id(),
-                        twoot.author(),
-                        twoot.content(),
-                        twoot.likes(),
-                        twoot.commentNumber(),
-                        twoot.postedAt(),
-                        likedByUser.contains(twoot.id())
+                        twoot.getId(),
+                        new UserResponse(twoot.getAuthor().getId(), twoot.getAuthor().getUsername(), isAuthorFollowed(twoot.getAuthor().getId(), followed)),
+                        twoot.getContent(),
+                        twoot.getLikedByUsers().size(),
+                        twoot.getComments().size(),
+                        twoot.getPostedAt(),
+                        likedByUser.contains(twoot.getId())
                 ))
                 .toList();
 
         return new TwootAllResponse(
                 allTwootsWithLiked.size(),
-                allTwoots.getFirst().postedAt(),
+                allTwoots.getFirst().getPostedAt(),
                 allTwootsWithLiked
         );
+    }
 
-
+    private boolean isAuthorFollowed(UUID authorId, Set<UserJpaEntity> followed) {
+        return followed.stream().anyMatch(usr -> usr.getId().equals(authorId));
 
     }
 

@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.application.service.crud.impl;
 
+import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
@@ -22,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CommentCrudServiceImpl implements CommentCrudService {
@@ -48,7 +47,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
 
     @Override
     @Transactional
-    public Comment postNewComment(String username, String content, UUID twootId) {
+    public CommentResponse postNewComment(String username, String content, UUID twootId) {
         validateParameters(content);
         UserJpaEntity author = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("username not found"));
@@ -68,20 +67,75 @@ public class CommentCrudServiceImpl implements CommentCrudService {
                 .build();
 
         CommentJpaEntity persistedComment = commentRepository.save(comment);
-        return CommentEntityMapper.toDomain(persistedComment);
+        return new CommentResponse(
+                twootId,
+                persistedComment.getId(),
+                new UserResponse(author.getId(), author.getUsername(), false),
+                persistedComment.getContent(),
+                0,
+                persistedComment.getPostedAt(),
+                false
+        );
     }
 
     @Override
     public CommentsOfTwootResponse getCommentsOfTwoot(UUID twootId) {
-        List<CommentResponse> allCommentsOfTwoot = commentRepository.findAllCommentsOfTwoot(twootId);
-            return new CommentsOfTwootResponse(allCommentsOfTwoot);
+        Set<CommentJpaEntity> commentEntities = commentRepository.findByTwoot(twootId);
+        if (commentEntities.isEmpty()) {
+            return new CommentsOfTwootResponse(
+                    new ArrayList<>()
+            );
+        }
+
+        return new CommentsOfTwootResponse(
+                commentEntities.stream().map(commJpa ->
+                        new CommentResponse(
+                                commJpa.getTwoot().getId(),
+                                commJpa.getId(),
+                                new UserResponse(commJpa.getAuthor().getId(), commJpa.getAuthor().getUsername(), false),
+                                commJpa.getContent(),
+                                commJpa.getLikedByUsers().size(),
+                                commJpa.getPostedAt(),
+                                false
+
+                        )).toList()
+        );
     }
 
     @Override
     public CommentsOfTwootResponse getCommentsOfTwoot(UUID twootId, String user) {
-        List<CommentResponse> allCommentsOfTwoot = commentRepository.findAllCommentsOfTwoot(twootId, user);
-        return new CommentsOfTwootResponse(allCommentsOfTwoot);
+
+
+        Set<CommentJpaEntity> commentEntities = commentRepository.findByTwoot(twootId);
+        if (commentEntities.isEmpty()) {
+            return new CommentsOfTwootResponse(
+                    new ArrayList<>()
+            );
+        }
+
+        Set<UserJpaEntity> followedByUser = userRepository.findFollowed(user);
+        Set<CommentJpaEntity> commsLikedByUser = commentRepository.findLikedByUser(user);
+        return new CommentsOfTwootResponse(
+                commentEntities.stream().map(commJpa ->
+                        new CommentResponse(
+                                commJpa.getTwoot().getId(),
+                                commJpa.getId(),
+                                new UserResponse(commJpa.getAuthor().getId(), commJpa.getAuthor().getUsername(), isFollowedByUser(commJpa.getAuthor().getId(), followedByUser)),
+                                commJpa.getContent(),
+                                commJpa.getLikedByUsers().size(),
+                                commJpa.getPostedAt(),
+                                commsLikedByUser.contains(commJpa)
+
+                        )).toList()
+        );
     }
+
+    private boolean isFollowedByUser(UUID authorId, Set<UserJpaEntity> followedByUser) {
+        return followedByUser.stream().anyMatch(follw -> follw.getId().equals(authorId));
+    }
+
+
+
 
     private void validateParameters(String content) {
         try {

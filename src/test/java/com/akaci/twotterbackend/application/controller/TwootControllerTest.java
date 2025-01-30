@@ -77,7 +77,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
     void postTwoot_postSuccess() throws Exception {
         performPostTwootRequest(TWOOT_CONTENT)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.author").value(VALID_USERNAME))
+                .andExpect(jsonPath("$.author.name").value(VALID_USERNAME))
                 .andExpect(jsonPath("$.content").value(TWOOT_CONTENT));
 
     }
@@ -100,7 +100,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
         UUID twootId = twootResponse.id();
         performPostCommentRequest(twootId, COMMENT_CONTENT)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.author").value(VALID_USERNAME))
+                .andExpect(jsonPath("$.author.name").value(VALID_USERNAME))
                 .andExpect(jsonPath("$.twootId").value(twootId.toString()))
                 .andExpect(jsonPath("$.content").value(COMMENT_CONTENT));
     }
@@ -135,11 +135,9 @@ class TwootControllerTest extends BaseAuthenticationTest {
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
                 .andExpect(jsonPath("$.likeResult").value(LikeStatus.ADDED.toString()));
-
-
-
-
     }
+
+
 
     @Test
     void likeTwoot_twootAlreadyLiked_removedLike() throws Exception {

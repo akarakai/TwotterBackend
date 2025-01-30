@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
+import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
@@ -93,7 +94,7 @@ public class TwootController {
         Twoot newTwoot = twootCrudService.postNewTwoot(username, content);
         TwootResponse response = new TwootResponse(
                 newTwoot.getId(),
-                newTwoot.getAuthor().getUsername(),
+                new UserResponse(newTwoot.getAuthor().getId(), newTwoot.getAuthor().getUsername(), false ),
                 newTwoot.getContent(),
                 0,
                 0,
@@ -118,16 +119,7 @@ public class TwootController {
         String content = commentRequest.content();
         UUID twootId = commentRequest.twootId();
 
-        Comment postedComment = commentCrudService.postNewComment(username, content, twootId);
-        CommentResponse response = new CommentResponse(
-                postedComment.getTwoot().getId(),
-                postedComment.getId(),
-                postedComment.getAuthor().getUsername(),
-                postedComment.getContent(),
-                0,
-                postedComment.getPostedAt(),
-                false
-        );
+        CommentResponse response = commentCrudService.postNewComment(username, content, twootId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
