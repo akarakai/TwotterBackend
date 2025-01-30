@@ -1,6 +1,9 @@
 package com.akaci.twotterbackend.application.service.crud.impl;
 
+import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
+import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;
 import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
+import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.commonValidator.TwootCommentValidator;
 import com.akaci.twotterbackend.domain.model.Comment;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,12 +34,14 @@ public class CommentCrudServiceImpl implements CommentCrudService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final TwootRepository twootRepository;
+    private final UserCrudService userCrudService;
 
     public CommentCrudServiceImpl(CommentRepository commentRepository, UserRepository userRepository,
-                                  TwootRepository twootRepository) {
+                                  TwootRepository twootRepository, UserCrudService userCrudService) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.twootRepository = twootRepository;
+        this.userCrudService = userCrudService;
     }
 
     @Override
@@ -61,14 +67,21 @@ public class CommentCrudServiceImpl implements CommentCrudService {
 
         CommentJpaEntity persistedComment = commentRepository.save(comment);
         return CommentEntityMapper.toDomain(persistedComment);
-
     }
 
+    @Override
+    public CommentsOfTwootResponse getCommentsOfTwoot(UUID twootId) {
+        List<CommentResponse> allCommentsOfTwoot = commentRepository.findAllCommentsOfTwoot(twootId);
+            return new CommentsOfTwootResponse(allCommentsOfTwoot);
+    }
 
+    @Override
+    public CommentsOfTwootResponse getCommentsOfTwoot(UUID twootId, String user) {
+        List<CommentResponse> allCommentsOfTwoot = commentRepository.findAllCommentsOfTwoot(twootId, user);
+        return new CommentsOfTwootResponse(allCommentsOfTwoot);
+    }
 
-
-
-        private void validateParameters(String content) {
+    private void validateParameters(String content) {
         try {
             TwootCommentValidator.validateCommentContent(content);
         } catch (IllegalArgumentException e) {

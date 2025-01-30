@@ -34,8 +34,7 @@ public interface TwootRepository extends CrudRepository<TwootJpaEntity, UUID> {
     """)
     int findNumberOfComments(UUID twootId);
 
-    // IL PROBLEMA E'CHE CI SERVE IL
-    // LIKED BY USER< QUINDI QUESTO TOCCA TOGLIERE
+
     @Query("""
         SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse(
             t.id, 

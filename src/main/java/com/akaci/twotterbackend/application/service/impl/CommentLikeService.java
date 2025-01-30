@@ -11,6 +11,8 @@ import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.CommentJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.mapper.CommentEntityMapper;
+import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.CommentRepository;
 import com.akaci.twotterbackend.persistence.repository.TwootRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
@@ -41,20 +43,20 @@ public class CommentLikeService implements LikeService {
     @Override
     public LikeResponse like(String username, UUID commentId) {
         UserJpaEntity userEntity = getUserEntity(username);
-        CommentJpaEntity twootEntity = getCommentToLike(commentId);
+        CommentJpaEntity commentEntity = getCommentToLike(commentId);
 
         User user = mapToUserModel(userEntity);
-        Comment comment = mapToCommentModel(commentId);
+        Comment comment = mapToCommentModel(commentEntity);
 
-        int initialLikeCount = userEntity.getLikedComments().size();
+        int initialCommentLikes = comment.getLikedByUsers().size();
+
         likeDomainService.like(user, comment);
 
-        if (shouldUpdateLike(userEntity, initialLikeCount)) {
-            return addLike(userEntity, twootEntity);
+        if (shouldUpdateLike(comment, initialCommentLikes)) {
+            return addLike(userEntity, commentEntity);
         }
 
-        return new LikeResponse(commentId.toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.REMOVED);
-
+        return removeLike(userEntity, commentEntity);
     }
 
 
@@ -73,22 +75,27 @@ public class CommentLikeService implements LikeService {
     }
 
 
-
-
-    private Comment mapToCommentModel(UUID commentId) {
+    private Comment mapToCommentModel(CommentJpaEntity commentEntity) {
         return Comment.builder()
-                .id(commentId)
+                .id(commentEntity.getId())
+                .likedByUsers(UserEntityMapper.setToDomain(commentEntity.getLikedByUsers()))
                 .build();
     }
 
-    private boolean shouldUpdateLike(UserJpaEntity userEntity, int initialLikeCount) {
-        return initialLikeCount < userEntity.getLikedComments().size() || initialLikeCount == 0;
+    private boolean shouldUpdateLike(Comment comment, int initialLikeCount) {
+        return initialLikeCount < comment.getLikedByUsers().size() || initialLikeCount == 0;
     }
 
     private LikeResponse addLike(UserJpaEntity userEntity, CommentJpaEntity commentEntity) {
         userEntity.getLikedComments().add(commentEntity);
         userRepository.save(userEntity);
         return new LikeResponse(commentEntity.getId().toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.ADDED);
+    }
+
+    private LikeResponse removeLike(UserJpaEntity userEntity, CommentJpaEntity commentEntity) {
+        userEntity.getLikedComments().remove(commentEntity);
+        userRepository.save(userEntity);
+        return new LikeResponse(commentEntity.getId().toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.REMOVED);
     }
 
     private UserJpaEntity getUserEntity(String username) {

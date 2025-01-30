@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.application.dto.response;
+package com.akaci.twotterbackend.application.dto.response.comment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -9,6 +9,7 @@ public record CommentResponse(
         String author,
         String content,
         int likes,
-        LocalDateTime postedAt
+        LocalDateTime postedAt,
+        boolean likedByUser
 ) {
 }

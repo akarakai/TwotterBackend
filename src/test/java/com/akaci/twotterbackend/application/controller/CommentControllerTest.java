@@ -2,7 +2,7 @@ package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
-import com.akaci.twotterbackend.application.dto.response.CommentResponse;
+import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;

@@ -2,7 +2,7 @@ package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
-import com.akaci.twotterbackend.application.dto.response.CommentResponse;
+import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
@@ -86,6 +86,9 @@ public class TwootController {
                 .body(response);
     }
 
+
+
+
     // Posting a new comment in a twoot is a simple crud process and there is no need
     // for domain specific logic like following/unfollowing a user
     @PostMapping("twoot/comment")
@@ -101,7 +104,8 @@ public class TwootController {
                 postedComment.getAuthor().getUsername(),
                 postedComment.getContent(),
                 0,
-                postedComment.getPostedAt()
+                postedComment.getPostedAt(),
+                false
         );
 
         return ResponseEntity
