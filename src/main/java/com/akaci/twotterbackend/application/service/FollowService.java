@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.application.service;
 
+import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
 import com.akaci.twotterbackend.domain.model.User;
 
 import java.util.UUID;
@@ -11,5 +12,7 @@ public interface FollowService {
 
     User unfollowUserByUsername(String username, String usernameToUnfollow);
     User unfollowUserById(String username, UUID id);
+
+    FollowUserResponseList getAllFollowed(String username);
 
 }

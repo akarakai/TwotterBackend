@@ -1,5 +1,8 @@
 package com.akaci.twotterbackend.application.service.impl;
 
+import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
+import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
+import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.service.FollowService;
 import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -72,8 +76,17 @@ public class FollowServiceImpl implements FollowService {
         UserJpaEntity userToUnfollow = getUserEntityById(id);
 
         return unfollowAndSave(user, userToUnfollow);
+    }
 
-
+    @Override
+    public FollowUserResponseList getAllFollowed(String username) {
+        Set<UserJpaEntity> followed = userRepository.findFollowed(username);
+        return new FollowUserResponseList(
+                followed.stream().map(f -> new FollowUserResponse(
+                        f.getId(),
+                        f.getUsername()
+                )).toList()
+        );
     }
 
     private void validateInputs(String username, String usernameToFollow) {
@@ -112,7 +125,7 @@ public class FollowServiceImpl implements FollowService {
 
         userRepository.save(UserEntityMapper.toJpaEntity(userDomain));
         userRepository.save(UserEntityMapper.toJpaEntity(userToFollowDomain));
-
+        LOGGER.info("User Followed");
         return userToFollowDomain;
     }
 
@@ -124,6 +137,7 @@ public class FollowServiceImpl implements FollowService {
 
         userRepository.save(UserEntityMapper.toJpaEntity(userDomain));
         userRepository.save(UserEntityMapper.toJpaEntity(userToUnfollowDomain));
+        LOGGER.info("User Unfollowed");
 
         return userToUnfollowDomain;
     }

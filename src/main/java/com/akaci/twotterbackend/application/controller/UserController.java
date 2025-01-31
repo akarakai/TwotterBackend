@@ -1,6 +1,7 @@
 package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
+import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
 import com.akaci.twotterbackend.application.service.FollowService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.model.User;
@@ -11,10 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -30,6 +28,17 @@ public class UserController {
     public UserController(UserCrudService userCrudService, FollowService followService) {
         this.userCrudService = userCrudService;
         this.followService = followService;
+    }
+
+    @GetMapping("user/followed")
+    public ResponseEntity<FollowUserResponseList> getFollowed() {
+        String accountName = getAccountUsername();
+        FollowUserResponseList response = followService.getAllFollowed(accountName);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+
     }
 
     @PostMapping("user/{username}/follow")
