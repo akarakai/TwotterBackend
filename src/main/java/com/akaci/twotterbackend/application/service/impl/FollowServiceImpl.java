@@ -2,23 +2,21 @@ package com.akaci.twotterbackend.application.service.impl;
 
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
-import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.service.FollowService;
 import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.domain.service.FollowDomainService;
 import com.akaci.twotterbackend.exceptions.UserToFollowNotFoundException;
 import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
+import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,6 +41,9 @@ public class FollowServiceImpl implements FollowService {
 
         UserJpaEntity user = getUserEntityByUsername(username);
         UserJpaEntity userToFollow = getUserEntityByUsername(usernameToFollow);
+        if (user.getId().equals(userToFollow.getId())) {
+            throw new BadRequestExceptionResponse("User cannot follow himself");
+        }
 
         return followAndSave(user, userToFollow);
     }
@@ -54,7 +55,9 @@ public class FollowServiceImpl implements FollowService {
 
         UserJpaEntity user = getUserEntityByUsername(username);
         UserJpaEntity userToFollow = getUserEntityById(id);
-
+        if (user.getId().equals(userToFollow.getId())) {
+            throw new BadRequestExceptionResponse("User cannot follow himself");
+        }
         return followAndSave(user, userToFollow);
     }
 

@@ -14,17 +14,17 @@ public interface UserRepository extends CrudRepository<UserJpaEntity, UUID> {
 
     Optional<UserJpaEntity> findByUsername(String username);
 
-//    @Query("""
-//    SELECT u.followed FROM UserJpaEntity u\s
-//    WHERE u.username = :username
-//       \s
-//       \s""")
-//    Set<UserJpaEntity> findFollowed(String username);
-
     @Query("""
-    SELECT u FROM UserJpaEntity u LEFT JOIN FETCH u.followed WHERE u.username = :username
-    """)
+    SELECT u.followed FROM UserJpaEntity u\s
+    WHERE u.username = :username
+       \s
+       \s""")
     Set<UserJpaEntity> findFollowed(String username);
+
+//    @Query("""
+//    SELECT u FROM UserJpaEntity u LEFT JOIN FETCH u.followed WHERE u.username = :username
+//    """)
+//    Set<UserJpaEntity> findFollowedTEST(String username);
 
 
 

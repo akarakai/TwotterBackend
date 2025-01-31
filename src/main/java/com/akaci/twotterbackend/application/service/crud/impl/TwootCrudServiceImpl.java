@@ -7,7 +7,6 @@ import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.commonValidator.TwootCommentValidator;
 import com.akaci.twotterbackend.domain.model.Twoot;
-import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
 import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 // replace repos with services.
