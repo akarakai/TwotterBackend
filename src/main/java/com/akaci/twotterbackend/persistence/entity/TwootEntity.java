@@ -2,7 +2,6 @@ package com.akaci.twotterbackend.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -16,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class TwootJpaEntity {
+public class TwootEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,15 +29,15 @@ public class TwootJpaEntity {
 
     @ManyToOne
     @JoinColumn(name = "author_user_id")
-    private UserJpaEntity author;
+    private UserEntity author;
 
     @OneToMany(mappedBy = "twoot")
     @Builder.Default
-    private Set<CommentJpaEntity> comments = new HashSet<>();
+    private Set<CommentEntity> comments = new HashSet<>();
 
     @ManyToMany(mappedBy = "likedTwoots")
     @Builder.Default
-    private Set<UserJpaEntity> likedByUsers = new HashSet<>();
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 
 
 

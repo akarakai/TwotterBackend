@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class ProfileJpaEntity {
+public class ProfileEntity {
 
     @Id
     @Column(length = 20, unique = true, nullable = false)

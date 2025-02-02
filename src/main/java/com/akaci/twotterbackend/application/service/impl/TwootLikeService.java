@@ -3,20 +3,16 @@ package com.akaci.twotterbackend.application.service.impl;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.application.service.LikeService;
-import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.domain.model.Twoot;
 import com.akaci.twotterbackend.domain.model.User;
 import com.akaci.twotterbackend.domain.service.LikeDomainService;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.TwootEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.TwootRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +40,8 @@ public class TwootLikeService implements LikeService {
     @Override
     @Transactional
     public LikeResponse like(String username, UUID twootId) {
-        UserJpaEntity userEntity = getUserEntity(username);
-        TwootJpaEntity twootEntity = getTwootToLike(twootId);
+        UserEntity userEntity = getUserEntity(username);
+        TwootEntity twootEntity = getTwootToLike(twootId);
 
         User user = mapToUserModel(userEntity);
         Twoot twoot = mapToTwootModel(twootEntity);
@@ -63,7 +59,7 @@ public class TwootLikeService implements LikeService {
         return removeLike(userEntity, twootEntity);
     }
 
-    private User mapToUserModel(UserJpaEntity userEntity) {
+    private User mapToUserModel(UserEntity userEntity) {
 
         Set<Twoot> likedTwoots = userEntity.getLikedTwoots().stream()
                 .map(t -> Twoot.builder()
@@ -77,7 +73,7 @@ public class TwootLikeService implements LikeService {
                 .build();
     }
 
-    private Twoot mapToTwootModel(TwootJpaEntity twootEntity) {
+    private Twoot mapToTwootModel(TwootEntity twootEntity) {
         return Twoot.builder()
                 .id(twootEntity.getId())
                 .likedByUsers(UserEntityMapper.setToDomain(twootEntity.getLikedByUsers()))
@@ -88,24 +84,24 @@ public class TwootLikeService implements LikeService {
         return initialLikeCount < twoot.getLikedByUsers().size() || initialLikeCount == 0;
     }
 
-    private LikeResponse addLike(UserJpaEntity userEntity, TwootJpaEntity twootEntity) {
+    private LikeResponse addLike(UserEntity userEntity, TwootEntity twootEntity) {
         userEntity.getLikedTwoots().add(twootEntity);
         userRepository.save(userEntity);
         return new LikeResponse(twootEntity.getId().toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.ADDED);
     }
 
-    private LikeResponse removeLike(UserJpaEntity userEntity, TwootJpaEntity twootEntity) {
+    private LikeResponse removeLike(UserEntity userEntity, TwootEntity twootEntity) {
         userEntity.getLikedTwoots().remove(twootEntity);
         userRepository.save(userEntity);
         return new LikeResponse(twootEntity.getId().toString(), CONTENT_TYPE_TO_LIKE, LikeStatus.REMOVED);
     }
 
-    private UserJpaEntity getUserEntity(String username) {
+    private UserEntity getUserEntity(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new BadRequestExceptionResponse("User not found: " + username));
     }
 
-    private TwootJpaEntity getTwootToLike(UUID twootId) {
+    private TwootEntity getTwootToLike(UUID twootId) {
         return twootRepository.findById(twootId)
                 .orElseThrow(() -> new BadRequestExceptionResponse("Twoot not found: " + twootId));
     }

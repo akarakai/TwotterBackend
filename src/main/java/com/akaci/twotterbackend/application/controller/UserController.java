@@ -5,8 +5,7 @@ import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
 import com.akaci.twotterbackend.application.service.FollowService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.model.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("api")
 public class UserController {
-
-    private static final Logger LOGGER = LogManager.getLogger(UserController.class);
 
     private final UserCrudService userCrudService;
     private final FollowService followService;

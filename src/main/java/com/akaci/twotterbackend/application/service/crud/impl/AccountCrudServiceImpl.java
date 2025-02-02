@@ -1,7 +1,7 @@
 package com.akaci.twotterbackend.application.service.crud.impl;
 
 import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
-import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.AccountEntity;
 import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,11 +24,11 @@ public class AccountCrudServiceImpl implements AccountCrudService {
 
     @Override
     public void updateLastLoggedIn(String accountName) {
-        Optional<AccountJpaEntity> accountOptional = accountRepository.findByUsername(accountName);
+        Optional<AccountEntity> accountOptional = accountRepository.findByUsername(accountName);
         if (accountOptional.isEmpty()) {
             throw new UsernameNotFoundException("username not fount");
         }
-        AccountJpaEntity account = accountOptional.get();
+        AccountEntity account = accountOptional.get();
         account.setLastLoggedInAt(LocalDateTime.now());
         accountRepository.save(account);
 

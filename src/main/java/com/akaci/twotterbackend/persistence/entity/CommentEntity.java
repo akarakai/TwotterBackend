@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class CommentJpaEntity {
+public class CommentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,15 +30,15 @@ public class CommentJpaEntity {
 
     @ManyToOne
     @JoinColumn(name = "author_user_id")
-    private UserJpaEntity author;
+    private UserEntity author;
 
     @ManyToOne
     @JoinColumn(name = "twoot_id")
-    private TwootJpaEntity twoot;
+    private TwootEntity twoot;
 
     @ManyToMany(mappedBy = "likedComments")
     @Builder.Default
-    private Set<UserJpaEntity> likedByUsers = new HashSet<>();
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 
 
 
@@ -47,7 +47,7 @@ public class CommentJpaEntity {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        CommentJpaEntity that = (CommentJpaEntity) o;
+        CommentEntity that = (CommentEntity) o;
         return Objects.equals(id, that.id);
     }
 

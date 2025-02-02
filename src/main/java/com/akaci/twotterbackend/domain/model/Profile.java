@@ -10,15 +10,22 @@ import lombok.Setter;
 @Setter
 public class Profile {
 
-    private final String username;
+    private final String name;
     private String description;
 
     private static final int MAX_DESCRIPTION_LENGTH = 200;
 
-    public Profile(String username, String description) {
-        validateName(username);
+    public Profile(String name, String description) {
+        validateName(name);
         setDescription(description);
-        this.username = username;
+        this.name = name;
+    }
+
+    public Profile(String name) {
+        validateName(name);
+        setDescription(null);
+        this.name = name;
+
     }
 
     public void setDescription(String description) {

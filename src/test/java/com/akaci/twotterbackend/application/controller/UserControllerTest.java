@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.apache.logging.log4j.LogManager;
@@ -79,9 +79,9 @@ class UserControllerTest extends BaseAuthenticationTest {
 
     @Test
     void followUser_goodId_userFollower() throws Exception {
-        Optional<UserJpaEntity> userCreatedNew = userRepository.findByUsername(ANOTHER_USERNAME);
+        Optional<UserEntity> userCreatedNew = userRepository.findByUsername(ANOTHER_USERNAME);
         assert userCreatedNew.isPresent();
-        UserJpaEntity user = userCreatedNew.get();
+        UserEntity user = userCreatedNew.get();
         performFollowRequest(user.getId())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(ANOTHER_USERNAME))
@@ -113,9 +113,9 @@ class UserControllerTest extends BaseAuthenticationTest {
     void unfollowUser_goodId_success() throws Exception {
         performFollowRequest(ANOTHER_USERNAME);
 
-        Optional<UserJpaEntity> userCreatedNew = userRepository.findByUsername(ANOTHER_USERNAME);
+        Optional<UserEntity> userCreatedNew = userRepository.findByUsername(ANOTHER_USERNAME);
         assert userCreatedNew.isPresent();
-        UserJpaEntity user = userCreatedNew.get();
+        UserEntity user = userCreatedNew.get();
 
         performUnfollowRequest(user.getId())
                 .andExpect(status().isOk())

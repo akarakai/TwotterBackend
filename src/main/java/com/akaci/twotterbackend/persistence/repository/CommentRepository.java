@@ -1,19 +1,15 @@
 package com.akaci.twotterbackend.persistence.repository;
 
-import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
-import com.akaci.twotterbackend.domain.model.Comment;
-import com.akaci.twotterbackend.persistence.entity.CommentJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.CommentEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 @Repository
-public interface CommentRepository extends CrudRepository<CommentJpaEntity, UUID> {
+public interface CommentRepository extends CrudRepository<CommentEntity, UUID> {
 
 //    @Query("""
 //    SELECT new com.akaci.twotterbackend.application.dto.response.comment.CommentResponse(
@@ -49,23 +45,23 @@ public interface CommentRepository extends CrudRepository<CommentJpaEntity, UUID
 //    List<CommentResponse> findAllCommentsOfTwoot(UUID twootId, String username);
 
     @Query("""
-    SELECT c FROM CommentJpaEntity c
+    SELECT c FROM CommentEntity c
     WHERE c.twoot.id = :twootId
 """)
-    Set<CommentJpaEntity> findByTwoot(UUID twootId);
+    Set<CommentEntity> findByTwoot(UUID twootId);
 
     @Query("""
-       SELECT c FROM CommentJpaEntity c
+       SELECT c FROM CommentEntity c
        WHERE c.author.username = :username
     """)
 
-    Set<CommentJpaEntity> findByUser(String username);
+    Set<CommentEntity> findByUser(String username);
 
 
     @Query("""
-    SELECT c FROM CommentJpaEntity c
+    SELECT c FROM CommentEntity c
     JOIN c.likedByUsers u
     WHERE u.username = :username
     """)
-    Set<CommentJpaEntity> findLikedByUser(String username);
+    Set<CommentEntity> findLikedByUser(String username);
 }

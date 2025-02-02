@@ -2,8 +2,8 @@ package com.akaci.twotterbackend.application.service.crud.impl;
 
 import com.akaci.twotterbackend.application.service.crud.ProfileCrudService;
 import com.akaci.twotterbackend.domain.model.Profile;
-import com.akaci.twotterbackend.persistence.entity.ProfileJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.ProfileEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.mapper.ProfileEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.ProfileRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
@@ -30,9 +30,9 @@ public class ProfileCrudServiceImpl implements ProfileCrudService {
 
     @Override
     public Profile getProfileFromUsername(String username) {
-        ProfileJpaEntity profileJpaEntity = getProfileJpaEntity(username);
+        ProfileEntity profileEntity = getProfileJpaEntity(username);
 
-        return ProfileEntityMapper.toDomain(profileJpaEntity);
+        return ProfileEntityMapper.toDomain(profileEntity);
     }
 
     @Override
@@ -40,25 +40,25 @@ public class ProfileCrudServiceImpl implements ProfileCrudService {
         // TODO THis is bad, I created profile only because there is a validator in the description
         Profile profile = new Profile(username, newDescription);
 
-        ProfileJpaEntity profileJpaEntity = getProfileJpaEntity(profile.getUsername());
+        ProfileEntity profileEntity = getProfileJpaEntity(profile.getName());
 
-        profileJpaEntity.setDescription(newDescription);
+        profileEntity.setDescription(newDescription);
 
 
         // save
-        ProfileJpaEntity savedNewProfile = profileRepository.save(profileJpaEntity);
+        ProfileEntity savedNewProfile = profileRepository.save(profileEntity);
 
         return ProfileEntityMapper.toDomain(savedNewProfile);
     }
 
 
-    private ProfileJpaEntity getProfileJpaEntity(String username) {
-        Optional<UserJpaEntity> opUserJpa = userRepository.findByUsername(username);
+    private ProfileEntity getProfileJpaEntity(String username) {
+        Optional<UserEntity> opUserJpa = userRepository.findByUsername(username);
         if (opUserJpa.isEmpty()) {
             throw new UsernameNotFoundException("username not found");
         }
 
-        UserJpaEntity userJpaEntity = opUserJpa.get();
-        return userJpaEntity.getProfile();
+        UserEntity userEntity = opUserJpa.get();
+        return userEntity.getProfile();
     }
 }

@@ -3,6 +3,7 @@ package com.akaci.twotterbackend.persistence.entity;
 import com.akaci.twotterbackend.persistence.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class AccountJpaEntity {
+public class AccountEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,10 +27,11 @@ public class AccountJpaEntity {
     @Column(nullable = false, length = 100)
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private UserJpaEntity user;
+    private UserEntity user;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -38,22 +40,28 @@ public class AccountJpaEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role")
-    private RoleJpaEntity role;
+    private RoleEntity role;
 
-    public AccountJpaEntity(UUID id, String username, String password, Role role) {
+    public AccountEntity(UUID id, String username, String password, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.role = new RoleJpaEntity(role);
+        this.role = new RoleEntity(role);
     }
 
-    public AccountJpaEntity(String username, String password, Role role) {
+    public AccountEntity(String username, String password, Role role, UserEntity user) {
         this.username = username;
         this.password = password;
+        this.user = user;
         this.createdAt = LocalDateTime.now();
-        this.role = new RoleJpaEntity(role);
+        this.role = new RoleEntity(role);
     }
 
-
-
+    @Override
+    public String toString() {
+        return "AccountEntity{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

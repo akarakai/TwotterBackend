@@ -4,7 +4,7 @@ import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.model.Account;
 import com.akaci.twotterbackend.domain.model.Profile;
 import com.akaci.twotterbackend.domain.model.User;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +34,9 @@ public class UserCrudServiceImpl implements UserCrudService {
         user.setProfile(newProfileFromUser);
 //        user.setAccount(account);
 
-        UserJpaEntity userJpaEntity = UserEntityMapper.toJpaEntity(user);
-        userRepository.save(userJpaEntity);
-        return UserEntityMapper.toDomain(userJpaEntity);
+        UserEntity userEntity = UserEntityMapper.toJpaEntity(user);
+        userRepository.save(userEntity);
+        return UserEntityMapper.toDomain(userEntity);
     }
 
     @Override
@@ -46,13 +46,13 @@ public class UserCrudServiceImpl implements UserCrudService {
 
     @Override
     public User findByUsername(String username) {
-        Optional<UserJpaEntity> optionalUserJpa = userRepository.findByUsername(username);
+        Optional<UserEntity> optionalUserJpa = userRepository.findByUsername(username);
         if (optionalUserJpa.isEmpty()) {
             throw new UsernameNotFoundException("username not found");
         }
 
-        UserJpaEntity userJpaEntity = optionalUserJpa.get();
-        return UserEntityMapper.toDomain(userJpaEntity);
+        UserEntity userEntity = optionalUserJpa.get();
+        return UserEntityMapper.toDomain(userEntity);
     }
 
     private Profile createProfileFromUser(User user) {

@@ -7,9 +7,9 @@ import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
 import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.commonValidator.TwootCommentValidator;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
-import com.akaci.twotterbackend.persistence.entity.CommentJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.CommentEntity;
+import com.akaci.twotterbackend.persistence.entity.TwootEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.repository.CommentRepository;
 import com.akaci.twotterbackend.persistence.repository.TwootRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
@@ -46,16 +46,16 @@ public class CommentCrudServiceImpl implements CommentCrudService {
     @Transactional
     public CommentResponse postNewComment(String username, String content, UUID twootId) {
         validateParameters(content);
-        UserJpaEntity author = userRepository.findByUsername(username)
+        UserEntity author = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("username not found"));
 
-        TwootJpaEntity twoot = twootRepository.findById(twootId)
+        TwootEntity twoot = twootRepository.findById(twootId)
                 .orElseThrow(() -> new BadRequestExceptionResponse("twoot not found"));
 
         // because twoot and author are inside comment and they contain the
         // foreign key (they are the boss of the relation), there is not need to
         // put the comment inside the twoot and author sets in order to persist in the database
-        CommentJpaEntity comment = CommentJpaEntity
+        CommentEntity comment = CommentEntity
                 .builder()
                 .content(content)
                 .author(author)
@@ -63,7 +63,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
                 .postedAt(LocalDateTime.now())
                 .build();
 
-        CommentJpaEntity persistedComment = commentRepository.save(comment);
+        CommentEntity persistedComment = commentRepository.save(comment);
         return new CommentResponse(
                 twootId,
                 persistedComment.getId(),
@@ -77,7 +77,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
 
     @Override
     public CommentsOfTwootResponse getCommentsOfTwoot(UUID twootId) {
-        Set<CommentJpaEntity> commentEntities = commentRepository.findByTwoot(twootId);
+        Set<CommentEntity> commentEntities = commentRepository.findByTwoot(twootId);
         if (commentEntities.isEmpty()) {
             return new CommentsOfTwootResponse(
                     new ArrayList<>()
@@ -103,15 +103,15 @@ public class CommentCrudServiceImpl implements CommentCrudService {
     public CommentsOfTwootResponse getCommentsOfTwoot(UUID twootId, String user) {
 
 
-        Set<CommentJpaEntity> commentEntities = commentRepository.findByTwoot(twootId);
+        Set<CommentEntity> commentEntities = commentRepository.findByTwoot(twootId);
         if (commentEntities.isEmpty()) {
             return new CommentsOfTwootResponse(
                     new ArrayList<>()
             );
         }
 
-        Set<UserJpaEntity> followedByUser = userRepository.findFollowed(user);
-        Set<CommentJpaEntity> commsLikedByUser = commentRepository.findLikedByUser(user);
+        Set<UserEntity> followedByUser = userRepository.findFollowed(user);
+        Set<CommentEntity> commsLikedByUser = commentRepository.findLikedByUser(user);
         return new CommentsOfTwootResponse(
                 commentEntities.stream().map(commJpa ->
                         new CommentResponse(
@@ -127,7 +127,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
         );
     }
 
-    private boolean isFollowedByUser(UUID authorId, Set<UserJpaEntity> followedByUser) {
+    private boolean isFollowedByUser(UUID authorId, Set<UserEntity> followedByUser) {
         return followedByUser.stream().anyMatch(follw -> follw.getId().equals(authorId));
     }
 

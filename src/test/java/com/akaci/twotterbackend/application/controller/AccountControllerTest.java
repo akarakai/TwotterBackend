@@ -1,9 +1,8 @@
 package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.request.SignUpRequest;
-import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.ProfileJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.ProfileEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.repository.ProfileRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,13 +90,13 @@ class AccountControllerTest extends BaseAuthenticationTest {
         performPostRequest(ACCOUNT_CREATE_ENDPOINT, signUpRequest);
 
         // User created with same account name
-        Optional<UserJpaEntity> opUser = userRepository.findByUsername(VALID_USERNAME);
+        Optional<UserEntity> opUser = userRepository.findByUsername(VALID_USERNAME);
         assertTrue(opUser.isPresent());
 
 
 
         // Profile created with same account and user name. This is default behaviour
-        ProfileJpaEntity profile = opUser.get().getProfile();
+        ProfileEntity profile = opUser.get().getProfile();
         assertEquals(VALID_USERNAME, profile.getName());
         assertEquals("", profile.getDescription());
     }

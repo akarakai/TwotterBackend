@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.security.authentication;
 
-import com.akaci.twotterbackend.persistence.entity.AccountJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.AccountEntity;
 import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,11 +26,11 @@ public class UserDetailsJpaService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<AccountJpaEntity> opAccount = accountRepository.findByUsername(username);
+        Optional<AccountEntity> opAccount = accountRepository.findByUsername(username);
         if (opAccount.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
-        AccountJpaEntity account = opAccount.get();
+        AccountEntity account = opAccount.get();
 
         String hashedPassword = account.getPassword();
         GrantedAuthority authority = new GrantedAuthorityImpl(account.getRole().getRole());

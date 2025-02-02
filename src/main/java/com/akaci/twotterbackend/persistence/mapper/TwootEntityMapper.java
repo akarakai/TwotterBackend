@@ -2,8 +2,8 @@ package com.akaci.twotterbackend.persistence.mapper;
 
 import com.akaci.twotterbackend.domain.model.Twoot;
 import com.akaci.twotterbackend.domain.model.User;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.TwootEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +13,7 @@ public class TwootEntityMapper {
 
     private static final Logger LOGGER = LogManager.getLogger(TwootEntityMapper.class);
 
-    public static Twoot toDomain(TwootJpaEntity twootJpa) {
+    public static Twoot toDomain(TwootEntity twootJpa) {
         Set<User> likedByUsers = UserEntityMapper.setToDomain(twootJpa.getLikedByUsers());
         User author = UserEntityMapper.toDomain(twootJpa.getAuthor());
 
@@ -27,11 +27,11 @@ public class TwootEntityMapper {
 
     }
 
-    public static TwootJpaEntity toJpaEntity(Twoot twoot) {
-        Set<UserJpaEntity> likedByUserJpa = UserEntityMapper.setToJpa(twoot.getLikedByUsers());
-        UserJpaEntity authorJpa = UserEntityMapper.toJpaEntity(twoot.getAuthor());
+    public static TwootEntity toJpaEntity(Twoot twoot) {
+        Set<UserEntity> likedByUserJpa = UserEntityMapper.setToJpa(twoot.getLikedByUsers());
+        UserEntity authorJpa = UserEntityMapper.toJpaEntity(twoot.getAuthor());
 
-        return TwootJpaEntity.builder()
+        return TwootEntity.builder()
                 .id(twoot.getId())
                 .content(twoot.getContent())
                 .likedByUsers(likedByUserJpa)

@@ -1,25 +1,23 @@
 package com.akaci.twotterbackend.application.controller;
 
+import com.akaci.twotterbackend.application.service.AuthenticationService;
 import com.akaci.twotterbackend.application.dto.request.SignUpRequest;
 import com.akaci.twotterbackend.application.dto.response.SignUpResponse;
-import com.akaci.twotterbackend.application.service.AuthenticationService;
-import com.akaci.twotterbackend.domain.model.Account;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class AccountController {
 
-    private static final Logger LOGGER = LogManager.getLogger(AccountController.class);
-    private final AuthenticationService authenticationService;
+    private final AuthenticationService authService;
 
-    public AccountController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    public AccountController(AuthenticationService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("public/account")
@@ -27,13 +25,11 @@ public class AccountController {
         String username = signUpRequest.username();
         String password = signUpRequest.password();
 
-        Account newAccount = authenticationService.signUp(username, password);
-        SignUpResponse accountResponse = new SignUpResponse(newAccount.getUsername());
+        SignUpResponse response = authService.createAccount(username, password);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(accountResponse);
+                .body(response);
     }
-
 }

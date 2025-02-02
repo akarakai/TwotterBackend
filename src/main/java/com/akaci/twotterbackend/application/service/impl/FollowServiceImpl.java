@@ -9,7 +9,7 @@ import com.akaci.twotterbackend.domain.service.FollowDomainService;
 import com.akaci.twotterbackend.exceptions.UserToFollowNotFoundException;
 import com.akaci.twotterbackend.exceptions.UsernameAlreadyExistsException;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -39,8 +39,8 @@ public class FollowServiceImpl implements FollowService {
     public User followUserByUsername(String username, String usernameToFollow) {
         validateInputs(username, usernameToFollow);
 
-        UserJpaEntity user = getUserEntityByUsername(username);
-        UserJpaEntity userToFollow = getUserEntityByUsername(usernameToFollow);
+        UserEntity user = getUserEntityByUsername(username);
+        UserEntity userToFollow = getUserEntityByUsername(usernameToFollow);
         if (user.getId().equals(userToFollow.getId())) {
             throw new BadRequestExceptionResponse("User cannot follow himself");
         }
@@ -53,8 +53,8 @@ public class FollowServiceImpl implements FollowService {
     public User followUserById(String username, UUID id) {
         validateInputs(username, id);
 
-        UserJpaEntity user = getUserEntityByUsername(username);
-        UserJpaEntity userToFollow = getUserEntityById(id);
+        UserEntity user = getUserEntityByUsername(username);
+        UserEntity userToFollow = getUserEntityById(id);
         if (user.getId().equals(userToFollow.getId())) {
             throw new BadRequestExceptionResponse("User cannot follow himself");
         }
@@ -65,8 +65,8 @@ public class FollowServiceImpl implements FollowService {
     public User unfollowUserByUsername(String username, String usernameToUnfollow) {
         validateInputs(username, usernameToUnfollow);
 
-        UserJpaEntity user = getUserEntityByUsername(username);
-        UserJpaEntity userToUnfollow = getUserEntityByUsername(usernameToUnfollow);
+        UserEntity user = getUserEntityByUsername(username);
+        UserEntity userToUnfollow = getUserEntityByUsername(usernameToUnfollow);
 
         return unfollowAndSave(user, userToUnfollow);
     }
@@ -75,15 +75,15 @@ public class FollowServiceImpl implements FollowService {
     public User unfollowUserById(String username, UUID id) {
         validateInputs(username, id);
 
-        UserJpaEntity user = getUserEntityByUsername(username);
-        UserJpaEntity userToUnfollow = getUserEntityById(id);
+        UserEntity user = getUserEntityByUsername(username);
+        UserEntity userToUnfollow = getUserEntityById(id);
 
         return unfollowAndSave(user, userToUnfollow);
     }
 
     @Override
     public FollowUserResponseList getAllFollowed(String username) {
-        Set<UserJpaEntity> followed = userRepository.findFollowed(username);
+        Set<UserEntity> followed = userRepository.findFollowed(username);
         return new FollowUserResponseList(
                 followed.stream().map(f -> new FollowUserResponse(
                         f.getId(),
@@ -110,17 +110,17 @@ public class FollowServiceImpl implements FollowService {
         }
     }
 
-    private UserJpaEntity getUserEntityByUsername(String username) {
+    private UserEntity getUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(UserToFollowNotFoundException::new);
     }
 
-    private UserJpaEntity getUserEntityById(UUID userId) {
+    private UserEntity getUserEntityById(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(UserToFollowNotFoundException::new);
     }
 
-    private User followAndSave(UserJpaEntity user, UserJpaEntity userToFollow) {
+    private User followAndSave(UserEntity user, UserEntity userToFollow) {
         User userDomain = UserEntityMapper.toDomain(user);
         User userToFollowDomain = UserEntityMapper.toDomain(userToFollow);
 
@@ -132,7 +132,7 @@ public class FollowServiceImpl implements FollowService {
         return userToFollowDomain;
     }
 
-    private User unfollowAndSave(UserJpaEntity user, UserJpaEntity userToUnfollow) {
+    private User unfollowAndSave(UserEntity user, UserEntity userToUnfollow) {
         User userDomain = UserEntityMapper.toDomain(user);
         User userToUnfollowDomain = UserEntityMapper.toDomain(userToUnfollow);
 

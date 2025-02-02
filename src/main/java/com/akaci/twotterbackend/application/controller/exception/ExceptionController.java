@@ -3,6 +3,7 @@ package com.akaci.twotterbackend.application.controller.exception;
 import com.akaci.twotterbackend.application.dto.response.ErrorResponse;
 import com.akaci.twotterbackend.exceptions.*;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
+import com.akaci.twotterbackend.exceptions.response.UnauthorizedResponseException;
 import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,16 @@ import java.time.LocalDateTime;
 public class ExceptionController {
 
     private static final Logger LOGGER = LogManager.getLogger(ExceptionController.class);
+
+
+    @ExceptionHandler(UnauthorizedResponseException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedResponseException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+    }
+
 
     @ExceptionHandler(BadRequestExceptionResponse.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestExceptionResponse ex) {

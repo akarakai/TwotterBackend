@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleJpaEntity {
+public class RoleEntity {
 
     @Id
     @Enumerated(value = EnumType.STRING)

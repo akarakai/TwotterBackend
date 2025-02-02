@@ -35,7 +35,7 @@ public class ProfileController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body( new ProfileResponse(profile.getUsername(), profile.getDescription()));
+                .body( new ProfileResponse(profile.getName(), profile.getDescription()));
     }
 
     @PutMapping("profile/description")
@@ -46,7 +46,7 @@ public class ProfileController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ProfileResponse(updatedProfile.getUsername(), updatedProfile.getDescription()));
+                .body(new ProfileResponse(updatedProfile.getName(), updatedProfile.getDescription()));
 
     }
 

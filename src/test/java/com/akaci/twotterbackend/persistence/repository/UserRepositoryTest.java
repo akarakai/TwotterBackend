@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.persistence.repository;
 
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        UserJpaEntity user = new UserJpaEntity();
+        UserEntity user = new UserEntity();
         // follow these users
-        Set<UserJpaEntity> followed = new HashSet<>();
-        followed.add(new UserJpaEntity());
-        followed.add(new UserJpaEntity());
-        followed.add(new UserJpaEntity());
+        Set<UserEntity> followed = new HashSet<>();
+        followed.add(new UserEntity());
+        followed.add(new UserEntity());
+        followed.add(new UserEntity());
     }
 
     @Test

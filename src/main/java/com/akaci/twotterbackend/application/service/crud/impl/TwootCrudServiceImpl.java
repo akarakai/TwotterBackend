@@ -8,8 +8,8 @@ import com.akaci.twotterbackend.application.service.crud.UserCrudService;
 import com.akaci.twotterbackend.domain.commonValidator.TwootCommentValidator;
 import com.akaci.twotterbackend.domain.model.Twoot;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
-import com.akaci.twotterbackend.persistence.entity.TwootJpaEntity;
-import com.akaci.twotterbackend.persistence.entity.UserJpaEntity;
+import com.akaci.twotterbackend.persistence.entity.TwootEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.mapper.TwootEntityMapper;
 import com.akaci.twotterbackend.persistence.repository.TwootRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
@@ -44,23 +44,23 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     @Transactional
     public Twoot postNewTwoot(String username, String content) {
         validateContent(content);
-        UserJpaEntity userEntity = userRepository.findByUsername(username)
+        UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("username not found"));
 
-        TwootJpaEntity twootEntity = TwootJpaEntity.builder()
+        TwootEntity twootEntity = TwootEntity.builder()
                 .content(content)
                 .postedAt(LocalDateTime.now())
                 .author(userEntity)
                 .build();
 
-        TwootJpaEntity savedTwoot = twootRepository.save(twootEntity);
+        TwootEntity savedTwoot = twootRepository.save(twootEntity);
         return TwootEntityMapper.toDomain(savedTwoot);
     }
 
     // TODO MAYBE IT IS HEAVY
     @Override
     public TwootAllResponse getAllTwoots() {
-        List<TwootJpaEntity> allTwoots = (List<TwootJpaEntity>) twootRepository.findAll();
+        List<TwootEntity> allTwoots = twootRepository.findAllByOrderByPostedAtDesc();
         List<TwootResponse> twoots = allTwoots.stream()
                 .map(twJpa -> new TwootResponse(
                        twJpa.getId(),
@@ -80,11 +80,11 @@ public class TwootCrudServiceImpl implements TwootCrudService {
 
     @Override
     public TwootResponse getTwoot(UUID id, String username) {
-        Optional<TwootJpaEntity> twootEntity = twootRepository.findById(id);
-        Set<UserJpaEntity> followed = userRepository.findFollowed(username);
+        Optional<TwootEntity> twootEntity = twootRepository.findById(id);
+        Set<UserEntity> followed = userRepository.findFollowed(username);
         if (twootEntity.isEmpty()) throw new BadRequestExceptionResponse("Twoot not found");
-        TwootJpaEntity twootJpaEntity = twootEntity.get();
-        Set<UserJpaEntity> usersWhoLikedTwoot = twootJpaEntity.getLikedByUsers();
+        TwootEntity twootJpaEntity = twootEntity.get();
+        Set<UserEntity> usersWhoLikedTwoot = twootJpaEntity.getLikedByUsers();
         boolean isLikedByUser = usersWhoLikedTwoot.stream().anyMatch(usr -> usr.getUsername().equals(username));
         return new TwootResponse(
                 twootJpaEntity.getId(),
@@ -100,9 +100,9 @@ public class TwootCrudServiceImpl implements TwootCrudService {
 
     @Override
     public TwootResponse getTwoot(UUID id) {
-        Optional<TwootJpaEntity> twootEntity = twootRepository.findById(id);
+        Optional<TwootEntity> twootEntity = twootRepository.findById(id);
         if (twootEntity.isEmpty()) throw new BadRequestExceptionResponse("TWOOT not found");
-        TwootJpaEntity twootJpaEntity = twootEntity.get();
+        TwootEntity twootJpaEntity = twootEntity.get();
         return new TwootResponse(
             twootJpaEntity.getId(),
             new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), false),
@@ -117,8 +117,8 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     @Override
     public TwootAllResponse getAllTwoots(String username) {
         UUID userId = userCrudService.findByUsername(username).getId();
-        Set<UserJpaEntity> followed = userRepository.findFollowed(username);
-        List<TwootJpaEntity> allTwoots = (List<TwootJpaEntity>) twootRepository.findAll();
+        Set<UserEntity> followed = userRepository.findFollowed(username);
+        List<TwootEntity> allTwoots = twootRepository.findAllByOrderByPostedAtDesc();
         Set<UUID> likedByUser = twootRepository.findLikedTwootsIdByUserId(userId);
         List<TwootResponse> allTwootsWithLiked = allTwoots.stream()
                 .map(twoot -> new TwootResponse(
@@ -139,7 +139,7 @@ public class TwootCrudServiceImpl implements TwootCrudService {
         );
     }
 
-    private boolean isAuthorFollowed(UUID authorId, Set<UserJpaEntity> followed) {
+    private boolean isAuthorFollowed(UUID authorId, Set<UserEntity> followed) {
         return followed.stream().anyMatch(usr -> usr.getId().equals(authorId));
 
     }

@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-public class UserJpaEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,7 +26,7 @@ public class UserJpaEntity {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "profile_name")
-    private ProfileJpaEntity profile;
+    private ProfileEntity profile;
 
     @ManyToMany
     @JoinTable(
@@ -35,19 +35,19 @@ public class UserJpaEntity {
             inverseJoinColumns = @JoinColumn(name = "followed_user_id")
     )
     @Builder.Default
-    private Set<UserJpaEntity> followed = new HashSet<>();
+    private Set<UserEntity> followed = new HashSet<>();
 
     @ManyToMany(mappedBy = "followed")
     @Builder.Default
-    private Set<UserJpaEntity> followers = new HashSet<>();
+    private Set<UserEntity> followers = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
     @Builder.Default
-    private Set<TwootJpaEntity> twoots = new HashSet<>();
+    private Set<TwootEntity> twoots = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
     @Builder.Default
-    private Set<CommentJpaEntity> comments = new HashSet<>();
+    private Set<CommentEntity> comments = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -56,7 +56,7 @@ public class UserJpaEntity {
             inverseJoinColumns = @JoinColumn(name = "author_user_id")
     )
     @Builder.Default
-    private Set<TwootJpaEntity> likedTwoots = new HashSet<>();
+    private Set<TwootEntity> likedTwoots = new HashSet<>();
 
 
     @ManyToMany
@@ -66,18 +66,18 @@ public class UserJpaEntity {
             inverseJoinColumns = @JoinColumn(name = "author_user_id")
     )
     @Builder.Default
-    private Set<CommentJpaEntity> likedComments = new HashSet<>();
+    private Set<CommentEntity> likedComments = new HashSet<>();
 
 
 
 
-    public UserJpaEntity(UUID id, String username, ProfileJpaEntity profile) {
+    public UserEntity(UUID id, String username, ProfileEntity profile) {
         this.id = id;
         this.username = username;
         this.profile = profile;
     }
 
-    public UserJpaEntity(String username, ProfileJpaEntity profile) {
+    public UserEntity(String username, ProfileEntity profile) {
         this.username = username;
         this.profile = profile;
     }
@@ -85,7 +85,7 @@ public class UserJpaEntity {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        UserJpaEntity userJpa = (UserJpaEntity) o;
+        UserEntity userJpa = (UserEntity) o;
         return Objects.equals(id, userJpa.id);
     }
 
