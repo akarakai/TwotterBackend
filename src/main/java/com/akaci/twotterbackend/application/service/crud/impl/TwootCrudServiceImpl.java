@@ -61,21 +61,18 @@ public class TwootCrudServiceImpl implements TwootCrudService {
     @Override
     public TwootAllResponse getAllTwoots() {
         List<TwootEntity> allTwoots = twootRepository.findAllByOrderByPostedAtDesc();
-        List<TwootResponse> twoots = allTwoots.stream()
-                .map(twJpa -> new TwootResponse(
-                       twJpa.getId(),
-                       new UserResponse(twJpa.getAuthor().getId(), twJpa.getAuthor().getUsername(), false),
-                       twJpa.getContent(),
-                       twJpa.getLikedByUsers().size(),
-                       twJpa.getComments().size(),
-                       twJpa.getPostedAt(),
-                       false
-                )).toList();
-        return new TwootAllResponse(
-                twoots.size(),
-                twoots.getFirst().postedAt(),
-                twoots
-        );
+//        List<TwootResponse> twoots = allTwoots.stream()
+//                .map(twJpa -> new TwootResponse(
+//                       twJpa.getId(),
+//                       new UserResponse(twJpa.getAuthor().getId(), twJpa.getAuthor().getUsername(), false),
+//                       twJpa.getContent(),
+//                       twJpa.getLikedByUsers().size(),
+//                       twJpa.getComments().size(),
+//                       twJpa.getPostedAt(),
+//                       false
+//                )).toList();
+        return null;
+
     }
 
     @Override
@@ -86,15 +83,16 @@ public class TwootCrudServiceImpl implements TwootCrudService {
         TwootEntity twootJpaEntity = twootEntity.get();
         Set<UserEntity> usersWhoLikedTwoot = twootJpaEntity.getLikedByUsers();
         boolean isLikedByUser = usersWhoLikedTwoot.stream().anyMatch(usr -> usr.getUsername().equals(username));
-        return new TwootResponse(
-                twootJpaEntity.getId(),
-                new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), isAuthorFollowed(twootJpaEntity.getAuthor().getId(), followed)),
-                twootJpaEntity.getContent(),
-                twootJpaEntity.getLikedByUsers().size(),
-                twootJpaEntity.getComments().size(),
-                twootJpaEntity.getPostedAt(),
-                isLikedByUser
-        );
+//        return new TwootResponse(
+//                twootJpaEntity.getId(),
+//                new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), isAuthorFollowed(twootJpaEntity.getAuthor().getId(), followed)),
+//                twootJpaEntity.getContent(),
+//                twootJpaEntity.getLikedByUsers().size(),
+//                twootJpaEntity.getComments().size(),
+//                twootJpaEntity.getPostedAt(),
+//                isLikedByUser
+//        );
+        return null;
 
     }
 
@@ -103,15 +101,16 @@ public class TwootCrudServiceImpl implements TwootCrudService {
         Optional<TwootEntity> twootEntity = twootRepository.findById(id);
         if (twootEntity.isEmpty()) throw new BadRequestExceptionResponse("TWOOT not found");
         TwootEntity twootJpaEntity = twootEntity.get();
-        return new TwootResponse(
-            twootJpaEntity.getId(),
-            new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), false),
-            twootJpaEntity.getContent(),
-            twootJpaEntity.getLikedByUsers().size(),
-            twootJpaEntity.getComments().size(),
-            twootJpaEntity.getPostedAt(),
-            false
-        );
+//        return new TwootResponse(
+//            twootJpaEntity.getId(),
+//            new UserResponse(twootJpaEntity.getAuthor().getId(), twootJpaEntity.getAuthor().getUsername(), false),
+//            twootJpaEntity.getContent(),
+//            twootJpaEntity.getLikedByUsers().size(),
+//            twootJpaEntity.getComments().size(),
+//            twootJpaEntity.getPostedAt(),
+//            false
+//        );
+        return null;
     }
 
     @Override
@@ -120,23 +119,24 @@ public class TwootCrudServiceImpl implements TwootCrudService {
         Set<UserEntity> followed = userRepository.findFollowed(username);
         List<TwootEntity> allTwoots = twootRepository.findAllByOrderByPostedAtDesc();
         Set<UUID> likedByUser = twootRepository.findLikedTwootsIdByUserId(userId);
-        List<TwootResponse> allTwootsWithLiked = allTwoots.stream()
-                .map(twoot -> new TwootResponse(
-                        twoot.getId(),
-                        new UserResponse(twoot.getAuthor().getId(), twoot.getAuthor().getUsername(), isAuthorFollowed(twoot.getAuthor().getId(), followed)),
-                        twoot.getContent(),
-                        twoot.getLikedByUsers().size(),
-                        twoot.getComments().size(),
-                        twoot.getPostedAt(),
-                        likedByUser.contains(twoot.getId())
-                ))
-                .toList();
+//        List<TwootResponse> allTwootsWithLiked = allTwoots.stream()
+//                .map(twoot -> new TwootResponse(
+//                        twoot.getId(),
+//                        new UserResponse(twoot.getAuthor().getId(), twoot.getAuthor().getUsername(), isAuthorFollowed(twoot.getAuthor().getId(), followed)),
+//                        twoot.getContent(),
+//                        twoot.getLikedByUsers().size(),
+//                        twoot.getComments().size(),
+//                        twoot.getPostedAt(),
+//                        likedByUser.contains(twoot.getId())
+//                ))
+//                .toList();
 
-        return new TwootAllResponse(
-                allTwootsWithLiked.size(),
-                allTwoots.getFirst().getPostedAt(),
-                allTwootsWithLiked
-        );
+//        return new TwootAllResponse(
+//                allTwootsWithLiked.size(),
+//                allTwoots.getFirst().getPostedAt(),
+//                allTwootsWithLiked
+//        );
+        return null;
     }
 
     private boolean isAuthorFollowed(UUID authorId, Set<UserEntity> followed) {

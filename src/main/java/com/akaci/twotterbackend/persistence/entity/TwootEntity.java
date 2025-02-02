@@ -2,9 +2,11 @@ package com.akaci.twotterbackend.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ public class TwootEntity {
     @Column(length = 300)
     private String content;
 
+    @CreationTimestamp
     @Column(name = "posted_at", nullable = false, updatable = false)
     private LocalDateTime postedAt;
 
@@ -39,9 +42,20 @@ public class TwootEntity {
     @Builder.Default
     private Set<UserEntity> likedByUsers = new HashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        TwootEntity that = (TwootEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 
 
-//    @ManyToMany
+    //    @ManyToMany
 //    @JoinTable(
 //            name = "twoot_likes",
 //            joinColumns = @JoinColumn(name = "author_user_id"),

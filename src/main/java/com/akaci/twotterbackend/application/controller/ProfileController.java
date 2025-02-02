@@ -1,11 +1,8 @@
 package com.akaci.twotterbackend.application.controller;
 
+import com.akaci.twotterbackend.application.NEWSERVICE.ProfileService;
 import com.akaci.twotterbackend.application.dto.request.UpdateProfileDescriptionRequest;
 import com.akaci.twotterbackend.application.dto.response.ProfileResponse;
-import com.akaci.twotterbackend.application.service.crud.ProfileCrudService;
-import com.akaci.twotterbackend.domain.model.Profile;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,44 +14,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api")
 public class ProfileController {
 
-    private static final Logger lOGGER = LogManager.getLogger(ProfileController.class);
+    private final ProfileService profileService;
 
-    private final ProfileCrudService profileCrudService;
-
-    public ProfileController(ProfileCrudService profileCrudService) {
-        this.profileCrudService = profileCrudService;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
-
-
-    // No request body needed because you get username after authentication
     @GetMapping("profile")
     public ResponseEntity<ProfileResponse> getProfile()  {
-        String accountName = getAccountUsername();
-        Profile profile = profileCrudService.getProfileFromUsername(accountName);
+        String username = getAccountUsername();
+        ProfileResponse response = profileService.getProfile(username);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body( new ProfileResponse(profile.getName(), profile.getDescription()));
+                .body(response);
     }
 
     @PutMapping("profile/description")
     public ResponseEntity<ProfileResponse> updateProfileDescription(@RequestBody UpdateProfileDescriptionRequest descriptionRequest) {
         String newDescription = descriptionRequest.newDescription();
-        String accountName = getAccountUsername();
-        Profile updatedProfile = profileCrudService.updateProfileDescription(accountName, newDescription);
+        String username = getAccountUsername();
+        ProfileResponse response = profileService.updateDescription(username, newDescription);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ProfileResponse(updatedProfile.getName(), updatedProfile.getDescription()));
-
+                .body(response);
     }
-
-
-
-
-
-
 
     private String getAccountUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -63,9 +48,4 @@ public class ProfileController {
         }
         return auth.getName();
     }
-
-
-
-
-
 }

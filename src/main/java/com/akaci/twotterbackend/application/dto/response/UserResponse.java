@@ -1,10 +1,17 @@
 package com.akaci.twotterbackend.application.dto.response;
 
+import lombok.*;
+
 import java.util.UUID;
 
-public record UserResponse(
-        UUID id,
-        String name,
-        boolean isFollowed
-) {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Builder
+public class UserResponse {
+
+    private UUID id;
+    private String username;
+    private boolean followed;
+
 }

@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.application.controller;
 
+import com.akaci.twotterbackend.application.NEWSERVICE.TwootService;
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
 import com.akaci.twotterbackend.application.dto.response.UserResponse;
@@ -29,26 +30,24 @@ import java.util.UUID;
 @RequestMapping("api")
 public class TwootController {
 
-    private static final Logger LOGGER = LogManager.getLogger(TwootController.class);
+    private final TwootService twootService;
 
     private final TwootCrudService twootCrudService;
     private final CommentCrudService commentCrudService;
     private final LikeService twootLikeService;
-    private final UserCrudService userCrudService;
 
     public TwootController(TwootCrudService twootCrudService, CommentCrudService commentCrudService,
-                           @Qualifier("twoot-like-service") LikeService twootLikeService, UserCrudService userCrudService) {
+                           @Qualifier("twoot-like-service") LikeService twootLikeService,
+                           TwootService twootService) {
         this.twootCrudService = twootCrudService;
+        this.twootService = twootService;
         this.commentCrudService = commentCrudService;
         this.twootLikeService = twootLikeService;
-        this.userCrudService = userCrudService;
     }
 
-    // TODO SHOULD I LEAVE THIS PRIVATE OR PUBLIC? FOR NOW PRIVATE
-    // for testing for now I put in public
     @GetMapping("public/twoot")
     public ResponseEntity<TwootAllResponse> getAllTwoots(UUID twootId) {
-        TwootAllResponse response = twootCrudService.getAllTwoots();
+        TwootAllResponse response = twootService.getAllTwoots();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +56,7 @@ public class TwootController {
 
     @GetMapping("public/twoot/{twootId}")
     public ResponseEntity<TwootResponse> getTwoot(@PathVariable UUID twootId) {
-        TwootResponse response = twootCrudService.getTwoot(twootId);
+        TwootResponse response = twootService.getTwoot(twootId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +66,7 @@ public class TwootController {
     @GetMapping("twoot/{twootId}")
     public ResponseEntity<TwootResponse> getTwootAuth(@PathVariable UUID twootId) {
         String username = getAccountUsername();
-        TwootResponse response = twootCrudService.getTwoot(twootId, username);
+        TwootResponse response = twootService.getTwoot(twootId, username);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,8 +77,8 @@ public class TwootController {
 
     @GetMapping("twoot")
     public ResponseEntity<TwootAllResponse> getAllTwootsAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TwootAllResponse response = twootCrudService.getAllTwoots(authentication.getName());
+        String username = getAccountUsername();
+        TwootAllResponse response = twootService.getAllTwootsAuth(username);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -90,17 +89,7 @@ public class TwootController {
     @PostMapping("twoot")
     public ResponseEntity<TwootResponse> postNewTwoot(@RequestBody TwootRequest twootRequest) {
         String username = getAccountUsername();
-        String content = twootRequest.content();
-        Twoot newTwoot = twootCrudService.postNewTwoot(username, content);
-        TwootResponse response = new TwootResponse(
-                newTwoot.getId(),
-                new UserResponse(newTwoot.getAuthor().getId(), newTwoot.getAuthor().getUsername(), false ),
-                newTwoot.getContent(),
-                0,
-                0,
-                newTwoot.getPostedAt(),
-                false
-        );
+        TwootResponse response = twootService.postTwoot(twootRequest, username);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -109,10 +98,6 @@ public class TwootController {
     }
 
 
-
-
-    // Posting a new comment in a twoot is a simple crud process and there is no need
-    // for domain specific logic like following/unfollowing a user
     @PostMapping("twoot/comment")
     public ResponseEntity<CommentResponse> postComment(@RequestBody CommentRequest commentRequest) {
         String username = getAccountUsername();

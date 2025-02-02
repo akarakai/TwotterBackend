@@ -37,7 +37,7 @@ class CommentControllerTest extends BaseAuthenticationTest {
         TwootResponse tResp = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootResponse.class);
 
         // comment the twoot and get the comment id
-        ResultActions raComm = performPostCommentRequest(tResp.id(), "This is a comment");
+        ResultActions raComm = performPostCommentRequest(tResp.getId(), "This is a comment");
         CommentResponse cResp = mapper.readValue(raComm.andReturn().getResponse().getContentAsString(), CommentResponse.class);
         commentId = cResp.commentId();
 

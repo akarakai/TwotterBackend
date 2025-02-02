@@ -77,7 +77,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
     void postTwoot_postSuccess() throws Exception {
         performPostTwootRequest(TWOOT_CONTENT)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.author.name").value(VALID_USERNAME))
+                .andExpect(jsonPath("$.author.username").value(VALID_USERNAME))
                 .andExpect(jsonPath("$.content").value(TWOOT_CONTENT));
 
     }
@@ -97,7 +97,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
         ResultActions ra = performPostTwootRequest(TWOOT_CONTENT);
         MockHttpServletResponse response = ra.andReturn().getResponse();
         TwootResponse twootResponse = mapper.readValue(response.getContentAsString(), TwootResponse.class);
-        UUID twootId = twootResponse.id();
+        UUID twootId = twootResponse.getId();
         performPostCommentRequest(twootId, COMMENT_CONTENT)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.author.name").value(VALID_USERNAME))
@@ -115,9 +115,9 @@ class TwootControllerTest extends BaseAuthenticationTest {
 
         TwootAllResponse response = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootAllResponse.class);
         assertEquals(NEW_TWOOTS_CONTENT.size(), response.totalTwootsNumber());
-        assertEquals(response.lastTwootPostedAt(), response.twoots().getFirst().postedAt());
+        assertEquals(response.lastTwootPostedAt(), response.twoots().getFirst().getMetadata().getPostedAt());
         assertEquals(NEW_TWOOTS_CONTENT.size(), response.twoots().size());
-//        assertTrue(response.twoots().getFirst().postedAt().isAfter(response.twoots().getLast().postedAt()));
+//        assertTrue(response.twoots().getFirst().getMetadata().getPostedAt().isAfter(response.lastTwootPostedAt()));
     }
 
     @Test
@@ -130,7 +130,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
         TwootAllResponse response = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootAllResponse.class);
 
         // id twoot to like
-        UUID id = response.twoots().getFirst().id();
+        UUID id = response.twoots().getFirst().getId();
 
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
@@ -149,7 +149,7 @@ class TwootControllerTest extends BaseAuthenticationTest {
         TwootAllResponse response = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), TwootAllResponse.class);
 
         // id twoot to like
-        UUID id = response.twoots().getFirst().id();
+        UUID id = response.twoots().getFirst().getId();
 
         likeTwoot(id).andExpect(status().isOk())
                 .andExpect(jsonPath("$.idContent").value(id.toString()))

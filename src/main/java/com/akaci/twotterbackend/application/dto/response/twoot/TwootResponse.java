@@ -1,18 +1,24 @@
 package com.akaci.twotterbackend.application.dto.response.twoot;
 
+import com.akaci.twotterbackend.application.dto.mapper.TwootMetadata;
 import com.akaci.twotterbackend.application.dto.response.UserResponse;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record TwootResponse(
-        UUID id,
-        UserResponse author,
-        String content,
-        int likes,
-        int commentNumber,
-        LocalDateTime postedAt,
-        boolean likedByUser
-) {}
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+public class TwootResponse {
+
+    private UUID id;
+    private String content;
+    private UserResponse author;
+    private TwootMetadata metadata;
+
+}
 
 

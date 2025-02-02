@@ -1,6 +1,8 @@
 package com.akaci.twotterbackend.persistence.repository;
 
+import com.akaci.twotterbackend.application.dto.mapper.TwootMetadata;
 import com.akaci.twotterbackend.persistence.entity.TwootEntity;
+import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -74,5 +76,35 @@ public interface TwootRepository extends CrudRepository<TwootEntity, UUID> {
         WHERE u.id = :userId
     """)
     Set<UUID> findLikedTwootsIdByUserId(UUID userId);
+
+
+    @Query("""
+    SELECT t FROM TwootEntity t
+    JOIN t.likedByUsers u
+    WHERE u.username = :username
+    """)
+    Set<TwootEntity> findTwootsLikedByUser(String username);
+
+    @Query("""
+    SELECT new com.akaci.twotterbackend.application.dto.mapper.TwootMetadata(
+    SIZE(t.likedByUsers),
+    SIZE(t.comments),
+    t.postedAt,
+    false)
+    FROM TwootEntity t
+    WHERE t.id = :twootId
+    """)
+    TwootMetadata findTwootMetadata(UUID twootId);
+
+    @Query("""
+    SELECT new com.akaci.twotterbackend.application.dto.mapper.TwootMetadata(
+    SIZE(t.likedByUsers),
+    SIZE(t.comments),
+    t.postedAt,
+    CASE WHEN :username IN (SELECT u.username FROM t.likedByUsers u) THEN true ELSE false END )
+    FROM TwootEntity t
+    WHERE t.id = :twootId
+    """)
+    TwootMetadata findTwootMetadataLikedByUser(UUID twootId, String username);
 
 }

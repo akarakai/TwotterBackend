@@ -1,6 +1,7 @@
 package com.akaci.twotterbackend.persistence.mapper;
 
 import com.akaci.twotterbackend.domain.model.user.User;
+import com.akaci.twotterbackend.domain.model.user.UserContent;
 import com.akaci.twotterbackend.domain.model.user.UserFollow;
 import com.akaci.twotterbackend.domain.model.user.UserLike;
 import com.akaci.twotterbackend.persistence.entity.UserEntity;
@@ -15,6 +16,7 @@ public interface UserMapper {
     User toDomainSimple(UserEntity entity);
     UserLike toDomainLike(UserEntity entity);
     UserFollow toDomainFollow(UserEntity entity);
+    UserContent toDomainContent(UserEntity entity);
 
 
     @Mapping(target = "twoots", ignore = true)
@@ -42,6 +44,14 @@ public interface UserMapper {
     @Mapping(target = "comments", ignore = true)
     UserEntity toEntity(UserFollow follow);
 
-
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "profile", ignore = true)
+    @Mapping(target = "likedTwoots", ignore = true)
+    @Mapping(target = "likedComments", ignore = true)
+    @Mapping(target = "followers", ignore = true)
+    @Mapping(target = "followed", ignore = true)
+    @Mapping(target = "comments", source = "postedComments")
+    @Mapping(target = "twoots", source = "postedTwoots")
+    UserEntity toEntity(UserContent content);
 
 }

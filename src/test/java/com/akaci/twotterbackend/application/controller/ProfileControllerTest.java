@@ -49,7 +49,7 @@ class ProfileControllerTest extends BaseAuthenticationTest {
     @Test
     void modifyDescription_tooBigDescription_badRequestResponse() throws Exception {
         stockMvcRequest(TOO_LONG_DESCRIPTION)
-        .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
 
