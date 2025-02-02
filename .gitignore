@@ -34,7 +34,6 @@ build/
 
 vppProject/
 
-IMPORTANTE.txt
-TODO.txt
+
 
 src/test/resources/application.properties
