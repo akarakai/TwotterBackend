@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.application.controller;
 
+import com.akaci.twotterbackend.application.NEWSERVICE.UserService;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
 import com.akaci.twotterbackend.application.service.FollowService;
@@ -20,18 +21,19 @@ import java.util.UUID;
 @RequestMapping("api")
 public class UserController {
 
-    private final UserCrudService userCrudService;
     private final FollowService followService;
 
-    public UserController(UserCrudService userCrudService, FollowService followService) {
-        this.userCrudService = userCrudService;
+    private final UserService userService;
+
+    public UserController(FollowService followService, UserService userService) {
         this.followService = followService;
+        this.userService = userService;
     }
 
     @GetMapping("user/followed")
     public ResponseEntity<FollowUserResponseList> getFollowed() {
         String accountName = getAccountUsername();
-        FollowUserResponseList response = followService.getAllFollowed(accountName);
+        FollowUserResponseList response = userService.getFollowed(accountName);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -41,11 +43,8 @@ public class UserController {
 
     @PostMapping("user/{username}/follow")
     public ResponseEntity<FollowUserResponse> followUser(@PathVariable(name = "username") String usernameToFollow) {
-        String accountName = getAccountUsername();
-        // ACCOUNT NAME == USER NAME, If you want to change displayed name, change profile name
-        // username and account name cannot be changed
-        User followedUser = followService.followUserByUsername(accountName, usernameToFollow);
-        FollowUserResponse response = new FollowUserResponse(followedUser.getId(), followedUser.getUsername());
+        String username = getAccountUsername();
+        FollowUserResponse response = userService.follow(username, usernameToFollow);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -55,9 +54,8 @@ public class UserController {
     // If the id is not UUID, spring will automatically respond with a 404
     @PostMapping("user/id/{id}/follow")
     public ResponseEntity<FollowUserResponse> followUser(@PathVariable(name = "id") UUID idToFollow) {
-        String accountName = getAccountUsername();
-        User followedUser = followService.followUserById(accountName, idToFollow);
-        FollowUserResponse response = new FollowUserResponse(followedUser.getId(), followedUser.getUsername());
+        String username = getAccountUsername();
+        FollowUserResponse response = userService.follow(username, idToFollow);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

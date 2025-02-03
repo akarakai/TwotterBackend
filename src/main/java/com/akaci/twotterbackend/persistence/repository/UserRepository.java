@@ -11,14 +11,12 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, UUID> {
-
     Optional<UserEntity> findByUsername(String username);
 
     @Query("""
-    SELECT u.followed FROM UserEntity u\s
+    SELECT u.followed FROM UserEntity u
     WHERE u.username = :username
-       \s
-       \s""")
+    """)
     Set<UserEntity> findFollowed(String username);
 
 //    @Query("""
@@ -26,6 +24,13 @@ public interface UserRepository extends CrudRepository<UserEntity, UUID> {
 //    """)
 //    Set<UserJpaEntity> findFollowed(String username);
 
+
+    @Query("""
+    SELECT u FROM UserEntity u
+    LEFT JOIN FETCH u.followed f
+    WHERE u.username = :username
+    """)
+    Optional<UserEntity> findUserWithFollowed(String username);
 
 
 

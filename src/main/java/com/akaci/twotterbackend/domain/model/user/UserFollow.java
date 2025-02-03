@@ -18,7 +18,11 @@ public class UserFollow {
     private final Set<User> followers = new HashSet<>();
 
     public void follow(User userToFollow) {
+        if (followed.contains(userToFollow)) {
+            throw new IllegalArgumentException("User is already followed");
+        }
 
+        followed.add(userToFollow);
     }
 
     public void unfollow(User userToUnfollow) {

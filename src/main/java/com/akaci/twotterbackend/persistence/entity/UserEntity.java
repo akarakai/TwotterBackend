@@ -28,7 +28,7 @@ public class UserEntity {
     @JoinColumn(name = "profile_name")
     private ProfileEntity profile;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "follower",
             joinColumns = @JoinColumn(name = "follower_user_id"),

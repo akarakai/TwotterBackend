@@ -13,6 +13,10 @@ import org.mapstruct.Mapping;
 
 public interface UserMapper {
 
+
+
+
+
     User toDomainSimple(UserEntity entity);
     UserLike toDomainLike(UserEntity entity);
     UserFollow toDomainFollow(UserEntity entity);

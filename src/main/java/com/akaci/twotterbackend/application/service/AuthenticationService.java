@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -55,6 +56,7 @@ public class AuthenticationService {
         this.userMapper = userMapper;
     }
 
+    @Transactional
     public SignUpResponse createAccount(String username, String password) {
         validateCredentials(username, password);
 
@@ -85,6 +87,7 @@ public class AuthenticationService {
         return new SignUpResponse(username);
     }
 
+    @Transactional
     public LogInResponse login(String username, String password, HttpServletResponse response) {
         validateCredentials(username, password);
 
