@@ -19,6 +19,7 @@ public interface UserMapper {
 
     User toDomainSimple(UserEntity entity);
     UserLike toDomainLike(UserEntity entity);
+
     UserFollow toDomainFollow(UserEntity entity);
     UserContent toDomainContent(UserEntity entity);
 

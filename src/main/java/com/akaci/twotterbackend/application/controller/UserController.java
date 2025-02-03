@@ -64,9 +64,8 @@ public class UserController {
 
     @PostMapping("user/{username}/unfollow")
     public ResponseEntity<FollowUserResponse> unfollowUser(@PathVariable(name = "username") String usernameToUnfollow) {
-        String accountName = getAccountUsername();
-        User unfollowedUser = followService.unfollowUserByUsername(accountName, usernameToUnfollow);
-        FollowUserResponse response = new FollowUserResponse(unfollowedUser.getId(), unfollowedUser.getUsername());
+        String username = getAccountUsername();
+        FollowUserResponse response = userService.unfollow(username, usernameToUnfollow);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -75,9 +74,8 @@ public class UserController {
 
     @PostMapping("user/id/{id}/unfollow")
     public ResponseEntity<FollowUserResponse> unfollowUser(@PathVariable(name = "id") UUID idToFollow) {
-        String accountName = getAccountUsername();
-        User unfollowedUser = followService.unfollowUserById(accountName, idToFollow);
-        FollowUserResponse response = new FollowUserResponse(unfollowedUser.getId(), unfollowedUser.getUsername());
+        String username = getAccountUsername();
+        FollowUserResponse response = userService.unfollow(username, idToFollow);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

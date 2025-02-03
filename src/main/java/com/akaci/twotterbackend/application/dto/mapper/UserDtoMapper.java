@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserDtoMapper {
 
-    @Mapping(target = "followed", source = "followed")
-    UserResponse toDto(UserEntity entity, boolean followed);
+    @Mapping(target = "isFollowed", source = "isFollowed")
+    UserResponse toDto(UserEntity entity, boolean isFollowed);
 
     FollowUserResponse toFollowedDto(UserEntity entity);
 

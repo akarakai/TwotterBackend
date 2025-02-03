@@ -11,12 +11,13 @@ import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
-@Builder
 @Getter
 public class UserLike {
 
     private final UUID id;
+
     private final Set<Twoot> likedTwoots = new HashSet<>();
+
     private final Set<Comment> likedComments = new HashSet<>();
 
     public void likeTwoot(Twoot twoot) {

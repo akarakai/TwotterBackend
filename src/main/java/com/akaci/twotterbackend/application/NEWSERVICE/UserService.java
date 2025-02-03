@@ -58,6 +58,21 @@ public class UserService {
         return followUser(username, userToFollowEntity);
     }
 
+    @Transactional
+    public FollowUserResponse unfollow(String username, UUID userToFollowId) {
+        UserEntity userToUnFollowEntity = userRepo.findById(userToFollowId)
+                .orElseThrow(() -> new BadRequestExceptionResponse("User not found"));
+        return unfollowUser(username, userToUnFollowEntity);
+    }
+
+    @Transactional
+    public FollowUserResponse unfollow(String username, String usernameToFollow) {
+        validateUsername(usernameToFollow);
+        UserEntity userToUnFollowEntity = userRepo.findByUsername(usernameToFollow)
+                .orElseThrow(() -> new BadRequestExceptionResponse("User not found"));
+        return unfollowUser(username, userToUnFollowEntity);
+    }
+
     private FollowUserResponse followUser(String username, UserEntity userToFollowEntity) {
         UserEntity userEntity = userRepo.findUserWithFollowed(username)
                 .orElseThrow(() -> new BadRequestExceptionResponse("User not found"));
@@ -75,6 +90,25 @@ public class UserService {
         log.info("{} followed {}", username, userToFollowEntity.getUsername());
 
         return new FollowUserResponse(userToFollowEntity.getId(), userToFollowEntity.getUsername());
+    }
+
+    private FollowUserResponse unfollowUser(String username, UserEntity userToUnfollowEntity) {
+        UserEntity userEntity = userRepo.findUserWithFollowed(username)
+                .orElseThrow(() -> new BadRequestExceptionResponse("User not found"));
+
+        if (!userEntity.getFollowed().contains(userToUnfollowEntity)) {
+            throw new BadRequestExceptionResponse("User was not followed");
+        }
+
+        UserFollow user = userMapper.toDomainFollow(userEntity);
+        User toUnfollowUser = userMapper.toDomainSimple(userToUnfollowEntity);
+
+        user.unfollow(toUnfollowUser);
+        userEntity.getFollowed().remove(userToUnfollowEntity);
+
+        log.info("{} unfollowed {}", username, userToUnfollowEntity.getUsername());
+
+        return new FollowUserResponse(userToUnfollowEntity.getId(), userToUnfollowEntity.getUsername());
     }
 
 
