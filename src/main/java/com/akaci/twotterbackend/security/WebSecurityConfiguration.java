@@ -1,6 +1,8 @@
 package com.akaci.twotterbackend.security;
 
+import com.akaci.twotterbackend.application.service.AuthenticationService;
 import com.akaci.twotterbackend.security.authentication.jwt.JwtFilter;
+import com.akaci.twotterbackend.security.authentication.jwt.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +33,7 @@ public class WebSecurityConfiguration {
     public WebSecurityConfiguration(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
+
 
 
 

@@ -59,25 +59,39 @@ class CommentControllerTest extends BaseAuthenticationTest {
                 .andExpect(status().isOk());
         LikeResponse lr = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), LikeResponse.class);
 
-        assertEquals(commentId.toString(), lr.idContent());
+        assertEquals(commentId.toString(), lr.idContent().toString());
         assertEquals(LikeStatus.ADDED, lr.likeResult());
         assertEquals(CONTENT_TYPE_TO_LIKE, lr.type());
     }
 
     @Test
-    void likeComment_commentWasLiked_commentIsNotLIkedAnymore() throws Exception {
+    void unlikeComment_commentWasLiked_commentIsNotLIkedAnymore() throws Exception {
         ResultActions ra1 = performLikeComment(commentId);
-        ResultActions ra = performLikeComment(commentId)
+        ResultActions ra = performUnLikeComment(commentId)
                 .andExpect(status().isOk());
         LikeResponse lr = mapper.readValue(ra.andReturn().getResponse().getContentAsString(), LikeResponse.class);
-        assertEquals(commentId.toString(), lr.idContent());
+        assertEquals(commentId, lr.idContent());
         assertEquals(CONTENT_TYPE_TO_LIKE, lr.type());
+    }
+
+    @Test
+    void unlikeComment_commentWasNotLiked_BadRequest() throws Exception {
+        ResultActions ra = performUnLikeComment(commentId)
+                .andExpect(status().isBadRequest());
+
     }
 
 
 
     private ResultActions performLikeComment(UUID commentId) throws Exception {
         String url = "/api/comment/" + commentId.toString() + "/like";
+        return mockMvc.perform(MockMvcRequestBuilders
+                .post(url)
+                .cookie(jwtDefaultUser));
+    }
+
+    private ResultActions performUnLikeComment(UUID commentId) throws Exception {
+        String url = "/api/comment/" + commentId.toString() + "/unlike";
         return mockMvc.perform(MockMvcRequestBuilders
                 .post(url)
                 .cookie(jwtDefaultUser));

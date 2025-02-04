@@ -3,10 +3,7 @@ package com.akaci.twotterbackend.application.controller;
 import com.akaci.twotterbackend.application.NEWSERVICE.UserService;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
-import com.akaci.twotterbackend.application.service.FollowService;
-import com.akaci.twotterbackend.application.service.crud.UserCrudService;
-import com.akaci.twotterbackend.domain.model.User;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

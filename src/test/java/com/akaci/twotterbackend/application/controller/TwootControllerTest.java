@@ -163,7 +163,9 @@ class TwootControllerTest extends BaseAuthenticationTest {
                 .andExpect(jsonPath("$.idContent").value(id.toString()))
                 .andExpect(jsonPath("$.likeResult").value(LikeStatus.ADDED.toString()));
 
-
+        unlikeTwoot(id).andExpect(status().isOk())
+                .andExpect(jsonPath("$.idContent").value(id.toString()))
+                .andExpect(jsonPath("$.likeResult").value(LikeStatus.REMOVED.toString()));
 
 
     }
@@ -173,6 +175,14 @@ class TwootControllerTest extends BaseAuthenticationTest {
                 .post("/api/twoot/" + twootId.toString() + "/like")
                 .cookie(jwtDefaultUser));
     }
+
+    private ResultActions unlikeTwoot(UUID twootId) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/twoot/" + twootId.toString() + "/unlike")
+                .cookie(jwtDefaultUser));
+    }
+
+
 
 
 

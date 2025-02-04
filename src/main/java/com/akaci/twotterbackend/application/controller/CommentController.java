@@ -1,15 +1,11 @@
 package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.NEWSERVICE.CommentService;
+import com.akaci.twotterbackend.application.NEWSERVICE.like.LikeContentService;
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
-import com.akaci.twotterbackend.application.service.LikeService;
-import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
-import jakarta.websocket.server.PathParam;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,14 +20,15 @@ import java.util.UUID;
 @RequestMapping("api")
 public class CommentController {
 
-    private final LikeService commentLikeService;
-
     private final CommentService commentService;
+    private final LikeContentService commentLikeService;
 
-    public CommentController(@Qualifier("comment-like-service") LikeService likeService,
-                             CommentService commentService) {
-        this.commentLikeService = likeService;
+
+    public CommentController(CommentService commentService,
+                             @Qualifier("comment") LikeContentService commentLikeService) {
         this.commentService = commentService;
+        this.commentLikeService = commentLikeService;
+
     }
 
     @GetMapping("comment")
@@ -85,7 +82,17 @@ public class CommentController {
     @PostMapping("comment/{id}/like")
     public ResponseEntity<LikeResponse> likeComment(@PathVariable("id") UUID commentId) {
         String username = getAccountUsername();
-        LikeResponse response = commentLikeService.like(username, commentId);
+        LikeResponse response = commentLikeService.addLike(commentId, username);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("comment/{id}/unlike")
+    public ResponseEntity<LikeResponse> unlikeComment(@PathVariable("id") UUID commentId) {
+        String username = getAccountUsername();
+        LikeResponse response = commentLikeService.removeLike(commentId, username);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

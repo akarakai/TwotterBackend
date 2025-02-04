@@ -12,7 +12,6 @@ import java.util.UUID;
 @Table(name = "`user`")
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
 @Setter
 public class UserEntity {
@@ -34,19 +33,19 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "follower_user_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_user_id")
     )
-    @Builder.Default
+//    @Builder.Default
     private Set<UserEntity> followed = new HashSet<>();
 
     @ManyToMany(mappedBy = "followed")
-    @Builder.Default
+//    @Builder.Default
     private Set<UserEntity> followers = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
-    @Builder.Default
+//    @Builder.Default
     private Set<TwootEntity> twoots = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
-    @Builder.Default
+//    @Builder.Default
     private Set<CommentEntity> comments = new HashSet<>();
 
     @ManyToMany
@@ -55,7 +54,6 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "twoot_id"),
             inverseJoinColumns = @JoinColumn(name = "author_user_id")
     )
-    @Builder.Default
     private Set<TwootEntity> likedTwoots = new HashSet<>();
 
 
@@ -65,7 +63,7 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "comment_id"),
             inverseJoinColumns = @JoinColumn(name = "author_user_id")
     )
-    @Builder.Default
+//    @Builder.Default
     private Set<CommentEntity> likedComments = new HashSet<>();
 
 

@@ -34,4 +34,20 @@ public interface UserRepository extends CrudRepository<UserEntity, UUID> {
 
 
 
+    @Query("""
+    SELECT u FROM UserEntity u
+    LEFT JOIN FETCH u.likedTwoots t
+    WHERE u.username = :username
+    """)
+    Optional<UserEntity> findUserWithTwootLiked(String username);
+
+    @Query("""
+    SELECT u FROM UserEntity u
+    LEFT JOIN FETCH u.likedComments
+    WHERE u.username = :username
+    """)
+    Optional<UserEntity> findUserWithCommentLiked(String username);
+
+
+
 }

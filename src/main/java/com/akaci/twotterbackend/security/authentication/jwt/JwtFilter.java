@@ -1,6 +1,8 @@
 package com.akaci.twotterbackend.security.authentication.jwt;
 
+import com.akaci.twotterbackend.application.service.AuthenticationService;
 import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
+import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import jakarta.servlet.FilterChain;
@@ -17,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -24,11 +27,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LogManager.getLogger(JwtFilter.class);
     private static final String COOKIE_NAME = "jwt-token";
     private final JwtUtil jwtUtil;
-    private final AccountCrudService accountCrudService;
+    private final AccountRepository accountRepo;; // remove this
 
-    public JwtFilter(AccountCrudService accountCrudService, JwtUtil jwtUtil) {
+    public JwtFilter(JwtUtil jwtUtil, AccountRepository accountRepo) {
         this.jwtUtil = jwtUtil;
-        this.accountCrudService = accountCrudService;
+        this.accountRepo = accountRepo;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         Authentication authentication = jwtUtil.getAuthenticationFromJwt(jwtToken);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         if (authentication != null && authentication.isAuthenticated()) {
-                            accountCrudService.updateLastLoggedIn(authentication.getName());
+                            accountRepo.updateLastLogIn(authentication.getName(), LocalDateTime.now());
                         }
                         filterChain.doFilter(request, response); // Proceed with the filter chain
                         return; // Stop further execution after the filter chain

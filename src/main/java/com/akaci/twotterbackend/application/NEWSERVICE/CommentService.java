@@ -7,7 +7,6 @@ import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentMetadata;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;
-import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.persistence.entity.CommentEntity;
 import com.akaci.twotterbackend.persistence.entity.TwootEntity;
 import com.akaci.twotterbackend.persistence.entity.UserEntity;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

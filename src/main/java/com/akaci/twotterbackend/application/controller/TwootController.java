@@ -1,15 +1,11 @@
 package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.NEWSERVICE.TwootService;
-import com.akaci.twotterbackend.application.dto.request.CommentRequest;
+import com.akaci.twotterbackend.application.NEWSERVICE.like.LikeContentService;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
-import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
-import com.akaci.twotterbackend.application.service.LikeService;
-import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
-import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,18 +21,12 @@ import java.util.UUID;
 public class TwootController {
 
     private final TwootService twootService;
+    private final LikeContentService twootLikeService;
 
-    private final TwootCrudService twootCrudService;
-    private final CommentCrudService commentCrudService;
-    private final LikeService twootLikeService;
-
-    public TwootController(TwootCrudService twootCrudService, CommentCrudService commentCrudService,
-                           @Qualifier("twoot-like-service") LikeService twootLikeService,
-                           TwootService twootService) {
-        this.twootCrudService = twootCrudService;
-        this.twootService = twootService;
-        this.commentCrudService = commentCrudService;
+    public TwootController(TwootService twootService,
+                           @Qualifier("twoot") LikeContentService twootLikeService) {
         this.twootLikeService = twootLikeService;
+        this.twootService = twootService;
     }
 
     @GetMapping("public/twoot")
@@ -95,7 +85,17 @@ public class TwootController {
     @PostMapping("twoot/{id}/like")
     public ResponseEntity<LikeResponse> likeTwoot(@PathVariable(name = "id") UUID twootId) {
         String username = getAccountUsername();
-        LikeResponse response = twootLikeService.like(username, twootId);
+        LikeResponse response = twootLikeService.addLike(twootId, username);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("twoot/{id}/unlike")
+    public ResponseEntity<LikeResponse> removeLikeTwoot(@PathVariable(name = "id") UUID twootId) {
+        String username = getAccountUsername();
+        LikeResponse response = twootLikeService.removeLike(twootId, username);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -107,6 +107,11 @@ public class AuthenticationService {
         }
     }
 
+    public void updateLoggedIn(String username) {
+        accountRepo.updateLastLogIn(username, LocalDateTime.now());
+
+    }
+
     private void validateCredentials(String username, String password) {
         UsernameValidator.validate(username);
         PasswordValidator.validate(password);
