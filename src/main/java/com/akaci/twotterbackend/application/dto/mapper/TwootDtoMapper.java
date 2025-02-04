@@ -1,5 +1,6 @@
 package com.akaci.twotterbackend.application.dto.mapper;
 
+import com.akaci.twotterbackend.application.dto.response.twoot.TwootMetadata;
 import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.persistence.entity.TwootEntity;

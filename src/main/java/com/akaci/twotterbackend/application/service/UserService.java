@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.application.NEWSERVICE;
+package com.akaci.twotterbackend.application.service;
 
 import com.akaci.twotterbackend.application.dto.mapper.UserDtoMapper;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
@@ -7,19 +7,15 @@ import com.akaci.twotterbackend.domain.commonValidator.UsernameValidator;
 import com.akaci.twotterbackend.domain.model.user.User;
 import com.akaci.twotterbackend.domain.model.user.UserFollow;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
-import com.akaci.twotterbackend.persistence.entity.AccountEntity;
 import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.mapper.UserMapper;
-import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.application.NEWSERVICE;
+package com.akaci.twotterbackend.application.service;
 
 import com.akaci.twotterbackend.application.dto.mapper.CommentDtoMapper;
 import com.akaci.twotterbackend.application.dto.mapper.UserDtoMapper;

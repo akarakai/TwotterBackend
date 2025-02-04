@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.application.service.AuthenticationService;
+import com.akaci.twotterbackend.security.authentication.AuthenticationService;
 import com.akaci.twotterbackend.application.dto.request.LogInRequest;
 import com.akaci.twotterbackend.application.dto.response.LogInResponse;
 import jakarta.servlet.http.HttpServletResponse;

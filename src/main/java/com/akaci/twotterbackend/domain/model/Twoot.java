@@ -1,9 +1,9 @@
 package com.akaci.twotterbackend.domain.model;
 
+import com.akaci.twotterbackend.domain.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @AllArgsConstructor
-public class Twoot implements Likable {
+public class Twoot {
 
     private static final Logger LOGGER = LogManager.getLogger(Twoot.class);
     private static final int MAX_CONTENT_LENGTH = 300;

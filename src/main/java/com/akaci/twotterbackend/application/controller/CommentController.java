@@ -1,7 +1,7 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.application.NEWSERVICE.CommentService;
-import com.akaci.twotterbackend.application.NEWSERVICE.like.LikeContentService;
+import com.akaci.twotterbackend.application.service.CommentService;
+import com.akaci.twotterbackend.application.service.like.LikeContentService;
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;

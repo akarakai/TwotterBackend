@@ -1,7 +1,5 @@
 package com.akaci.twotterbackend.security.authentication.jwt;
 
-import com.akaci.twotterbackend.application.service.AuthenticationService;
-import com.akaci.twotterbackend.application.service.crud.AccountCrudService;
 import com.akaci.twotterbackend.persistence.repository.AccountRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;

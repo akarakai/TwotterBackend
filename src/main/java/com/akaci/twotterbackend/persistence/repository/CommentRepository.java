@@ -1,6 +1,5 @@
 package com.akaci.twotterbackend.persistence.repository;
 
-import com.akaci.twotterbackend.application.dto.mapper.TwootMetadata;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentMetadata;
 import com.akaci.twotterbackend.persistence.entity.CommentEntity;
 import org.springframework.data.jpa.repository.Query;

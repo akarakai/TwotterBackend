@@ -1,10 +1,9 @@
-package com.akaci.twotterbackend.application.NEWSERVICE.like;
+package com.akaci.twotterbackend.application.service.like;
 
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.CommentEntity;
-import com.akaci.twotterbackend.persistence.entity.TwootEntity;
 import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import com.akaci.twotterbackend.persistence.repository.CommentRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;

@@ -1,8 +1,7 @@
 package com.akaci.twotterbackend.persistence.repository;
 
-import com.akaci.twotterbackend.application.dto.mapper.TwootMetadata;
+import com.akaci.twotterbackend.application.dto.response.twoot.TwootMetadata;
 import com.akaci.twotterbackend.persistence.entity.TwootEntity;
-import com.akaci.twotterbackend.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -86,7 +85,7 @@ public interface TwootRepository extends CrudRepository<TwootEntity, UUID> {
     Set<TwootEntity> findTwootsLikedByUser(String username);
 
     @Query("""
-    SELECT new com.akaci.twotterbackend.application.dto.mapper.TwootMetadata(
+    SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootMetadata(
     SIZE(t.likedByUsers),
     SIZE(t.comments),
     t.postedAt,
@@ -97,7 +96,7 @@ public interface TwootRepository extends CrudRepository<TwootEntity, UUID> {
     TwootMetadata findTwootMetadata(UUID twootId);
 
     @Query("""
-    SELECT new com.akaci.twotterbackend.application.dto.mapper.TwootMetadata(
+    SELECT new com.akaci.twotterbackend.application.dto.response.twoot.TwootMetadata(
     SIZE(t.likedByUsers),
     SIZE(t.comments),
     t.postedAt,

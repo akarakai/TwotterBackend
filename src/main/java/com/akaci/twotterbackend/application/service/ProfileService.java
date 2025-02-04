@@ -1,6 +1,5 @@
-package com.akaci.twotterbackend.application.NEWSERVICE;
+package com.akaci.twotterbackend.application.service;
 
-import com.akaci.twotterbackend.application.dto.request.ProfileRequest;
 import com.akaci.twotterbackend.application.dto.response.ProfileResponse;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.ProfileEntity;

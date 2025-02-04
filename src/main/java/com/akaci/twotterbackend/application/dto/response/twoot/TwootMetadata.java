@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.application.dto.mapper;
+package com.akaci.twotterbackend.application.dto.response.twoot;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,16 +1,13 @@
-package com.akaci.twotterbackend.application.NEWSERVICE.like;
+package com.akaci.twotterbackend.application.service.like;
 
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
-import com.akaci.twotterbackend.domain.model.Twoot;
 import com.akaci.twotterbackend.exceptions.response.BadRequestExceptionResponse;
 import com.akaci.twotterbackend.persistence.entity.TwootEntity;
 import com.akaci.twotterbackend.persistence.entity.UserEntity;
-import com.akaci.twotterbackend.persistence.repository.CommentRepository;
 import com.akaci.twotterbackend.persistence.repository.TwootRepository;
 import com.akaci.twotterbackend.persistence.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

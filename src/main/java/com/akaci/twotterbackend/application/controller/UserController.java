@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.application.NEWSERVICE.UserService;
+import com.akaci.twotterbackend.application.service.UserService;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponse;
 import com.akaci.twotterbackend.application.dto.response.FollowUserResponseList;
 

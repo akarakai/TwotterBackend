@@ -1,9 +1,9 @@
 package com.akaci.twotterbackend.domain.model;
 
+import com.akaci.twotterbackend.domain.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @AllArgsConstructor
-public class Comment implements Likable {
+public class Comment {
 
     private final UUID id;
     private final String content;

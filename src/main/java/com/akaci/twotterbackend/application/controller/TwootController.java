@@ -1,7 +1,7 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.application.NEWSERVICE.TwootService;
-import com.akaci.twotterbackend.application.NEWSERVICE.like.LikeContentService;
+import com.akaci.twotterbackend.application.service.TwootService;
+import com.akaci.twotterbackend.application.service.like.LikeContentService;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;

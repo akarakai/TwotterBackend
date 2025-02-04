@@ -1,6 +1,6 @@
 package com.akaci.twotterbackend.application.controller;
 
-import com.akaci.twotterbackend.application.NEWSERVICE.ProfileService;
+import com.akaci.twotterbackend.application.service.ProfileService;
 import com.akaci.twotterbackend.application.dto.request.UpdateProfileDescriptionRequest;
 import com.akaci.twotterbackend.application.dto.response.ProfileResponse;
 import org.springframework.http.HttpStatus;

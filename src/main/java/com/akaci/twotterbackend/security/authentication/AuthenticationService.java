@@ -1,4 +1,4 @@
-package com.akaci.twotterbackend.application.service;
+package com.akaci.twotterbackend.security.authentication;
 
 import com.akaci.twotterbackend.application.dto.response.LogInResponse;
 import com.akaci.twotterbackend.application.dto.response.SignUpResponse;
