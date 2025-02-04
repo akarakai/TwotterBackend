@@ -1,5 +1,7 @@
 package com.akaci.twotterbackend.persistence.repository;
 
+import com.akaci.twotterbackend.application.dto.mapper.TwootMetadata;
+import com.akaci.twotterbackend.application.dto.response.comment.CommentMetadata;
 import com.akaci.twotterbackend.persistence.entity.CommentEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -64,4 +66,30 @@ public interface CommentRepository extends CrudRepository<CommentEntity, UUID> {
     WHERE u.username = :username
     """)
     Set<CommentEntity> findLikedByUser(String username);
+
+    @Query("""
+    SELECT new com.akaci.twotterbackend.application.dto.response.comment.CommentMetadata(
+        SIZE(c.likedByUsers),
+        c.postedAt,
+        false
+        ) FROM CommentEntity c
+    WHERE c.id = :commentId
+    """)
+    CommentMetadata findCommentMetadata(UUID commentId);
+
+
+
+    @Query("""
+    SELECT new com.akaci.twotterbackend.application.dto.response.comment.CommentMetadata(
+        SIZE(c.likedByUsers),
+        c.postedAt,
+        CASE WHEN :username IN (SELECT u.username FROM c.likedByUsers u) THEN true ELSE false END 
+    ) FROM CommentEntity c
+    WHERE c.id = :commentId
+    """)
+    CommentMetadata findCommentMetadataLikedByUser(UUID commentId, String username);
+
+
+
+
 }

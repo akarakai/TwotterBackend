@@ -1,5 +1,8 @@
 package com.akaci.twotterbackend.application.controller;
 
+import com.akaci.twotterbackend.application.NEWSERVICE.CommentService;
+import com.akaci.twotterbackend.application.dto.request.CommentRequest;
+import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentsOfTwootResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.service.LikeService;
@@ -21,20 +24,20 @@ import java.util.UUID;
 @RequestMapping("api")
 public class CommentController {
 
-    private static final Logger logger = LogManager.getLogger(CommentController.class);
-
     private final LikeService commentLikeService;
-    private final CommentCrudService commentCrudService;
 
-    public CommentController(@Qualifier("comment-like-service") LikeService likeService, CommentCrudService commentCrudService) {
+    private final CommentService commentService;
+
+    public CommentController(@Qualifier("comment-like-service") LikeService likeService,
+                             CommentService commentService) {
         this.commentLikeService = likeService;
-        this.commentCrudService = commentCrudService;
+        this.commentService = commentService;
     }
 
     @GetMapping("comment")
     public ResponseEntity<CommentsOfTwootResponse> getCommentsOfTwoot(@RequestParam("twoot_id") UUID twootId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CommentsOfTwootResponse response = commentCrudService.getCommentsOfTwoot(twootId, auth.getName());
+        String username = getAccountUsername();
+        CommentsOfTwootResponse response = commentService.getComments(twootId, username);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -43,9 +46,38 @@ public class CommentController {
 
     @GetMapping("public/comment")
     public ResponseEntity<CommentsOfTwootResponse> getCommentsOfTwootAuth(@RequestParam("twoot_id") UUID twootId) {
-        CommentsOfTwootResponse response = commentCrudService.getCommentsOfTwoot(twootId);
+        CommentsOfTwootResponse response = commentService.getComments(twootId);
         return ResponseEntity
                 .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("comment/{id}")
+    public ResponseEntity<CommentResponse> getCommentAuth(@PathVariable UUID id) {
+        String username = getAccountUsername();
+        CommentResponse response = commentService.getComment(id, username);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("public/comment/{id}")
+    public ResponseEntity<CommentResponse> getComment(@PathVariable UUID id) {
+        CommentResponse response = commentService.getComment(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("twoot/comment")
+    public ResponseEntity<CommentResponse> postComment(@RequestBody CommentRequest commentRequest) {
+        String username = getAccountUsername();
+        CommentResponse response = commentService.postComment(commentRequest, username);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }

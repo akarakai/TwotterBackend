@@ -64,15 +64,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
                 .build();
 
         CommentEntity persistedComment = commentRepository.save(comment);
-        return new CommentResponse(
-                twootId,
-                persistedComment.getId(),
-                new UserResponse(author.getId(), author.getUsername(), false),
-                persistedComment.getContent(),
-                0,
-                persistedComment.getPostedAt(),
-                false
-        );
+        return null;
     }
 
     @Override
@@ -84,19 +76,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
             );
         }
 
-        return new CommentsOfTwootResponse(
-                commentEntities.stream().map(commJpa ->
-                        new CommentResponse(
-                                commJpa.getTwoot().getId(),
-                                commJpa.getId(),
-                                new UserResponse(commJpa.getAuthor().getId(), commJpa.getAuthor().getUsername(), false),
-                                commJpa.getContent(),
-                                commJpa.getLikedByUsers().size(),
-                                commJpa.getPostedAt(),
-                                false
-
-                        )).toList()
-        );
+        return null;
     }
 
     @Override
@@ -112,19 +92,7 @@ public class CommentCrudServiceImpl implements CommentCrudService {
 
         Set<UserEntity> followedByUser = userRepository.findFollowed(user);
         Set<CommentEntity> commsLikedByUser = commentRepository.findLikedByUser(user);
-        return new CommentsOfTwootResponse(
-                commentEntities.stream().map(commJpa ->
-                        new CommentResponse(
-                                commJpa.getTwoot().getId(),
-                                commJpa.getId(),
-                                new UserResponse(commJpa.getAuthor().getId(), commJpa.getAuthor().getUsername(), isFollowedByUser(commJpa.getAuthor().getId(), followedByUser)),
-                                commJpa.getContent(),
-                                commJpa.getLikedByUsers().size(),
-                                commJpa.getPostedAt(),
-                                commsLikedByUser.contains(commJpa)
-
-                        )).toList()
-        );
+        return null;
     }
 
     private boolean isFollowedByUser(UUID authorId, Set<UserEntity> followedByUser) {

@@ -31,7 +31,7 @@ class JwtFilterTest {
 
     private static final String VALID_USERNAME = "username1998";
     private static final String VALID_PASSWORD = "password1998";
-    private static final String SECURED_ENDPOINT = "/api/auth/test";
+    private static final String SECURED_ENDPOINT = "/api/auth/testingEndpoint/testJwt";
     private static final String ACCOUNT_CREATE_ENDPOINT = "/api/public/account";
     private static final Collection<GrantedAuthority> USER_AUTHORITY = Collections.singletonList(new GrantedAuthorityImpl(Role.USER));
     private static final String COOKIE_NAME = "jwt-token";
@@ -58,11 +58,13 @@ class JwtFilterTest {
         // create a jwt
         String jwt = jwtUtil.generateJwt(VALID_USERNAME, USER_AUTHORITY);
         Cookie cookie = createCookieWithJwt(jwt);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get(SECURED_ENDPOINT).cookie(cookie))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(VALID_USERNAME));
-        ;
+        String messageResponse = mockMvc.perform(MockMvcRequestBuilders
+                        .post(SECURED_ENDPOINT).cookie(cookie))
+                        .andExpect(status().isOk())
+                .andReturn()
+                .getResponse().getContentAsString();
+        assertEquals("Hello " + VALID_USERNAME, messageResponse);
+
 
     }
 

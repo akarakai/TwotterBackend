@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.application.controller;
 
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
+import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeStatus;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
@@ -18,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,11 +98,19 @@ class TwootControllerTest extends BaseAuthenticationTest {
         MockHttpServletResponse response = ra.andReturn().getResponse();
         TwootResponse twootResponse = mapper.readValue(response.getContentAsString(), TwootResponse.class);
         UUID twootId = twootResponse.getId();
-        performPostCommentRequest(twootId, COMMENT_CONTENT)
+
+        MockHttpServletResponse cr = performPostCommentRequest(twootId, COMMENT_CONTENT)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.author.name").value(VALID_USERNAME))
+                .andExpect(jsonPath("$.author.username").value(VALID_USERNAME))
                 .andExpect(jsonPath("$.twootId").value(twootId.toString()))
-                .andExpect(jsonPath("$.content").value(COMMENT_CONTENT));
+                .andExpect(jsonPath("$.content").value(COMMENT_CONTENT))
+                .andReturn().getResponse();
+
+        assertNotNull((mapper.readValue(cr.getContentAsString(), CommentResponse.class).getCommentId()));
+
+
+
+
     }
 
     @Test

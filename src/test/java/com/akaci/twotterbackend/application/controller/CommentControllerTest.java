@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CommentControllerTest extends BaseAuthenticationTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TwootControllerTest.class);
 
     private static final String POST_TWOOT_ENDPOINT = "/api/twoot";
     private static final String POST_COMMENT_ENDPOINT = "/api/twoot/comment";
@@ -39,7 +38,7 @@ class CommentControllerTest extends BaseAuthenticationTest {
         // comment the twoot and get the comment id
         ResultActions raComm = performPostCommentRequest(tResp.getId(), "This is a comment");
         CommentResponse cResp = mapper.readValue(raComm.andReturn().getResponse().getContentAsString(), CommentResponse.class);
-        commentId = cResp.commentId();
+        commentId = cResp.getCommentId();
 
         LOGGER.info("Comment Id: {}", commentId);
     }

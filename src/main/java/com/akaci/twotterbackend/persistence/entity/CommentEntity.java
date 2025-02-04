@@ -2,6 +2,7 @@ package com.akaci.twotterbackend.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ public class CommentEntity {
     @Column(length = 300)
     private String content;
 
+    @CreationTimestamp
     @Column(name = "posted_at", nullable = false, updatable = false)
     private LocalDateTime postedAt;
 

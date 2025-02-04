@@ -16,17 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Slf4j
 @RestController
 @RequestMapping("api")
 public class UserController {
 
-    private final FollowService followService;
 
     private final UserService userService;
 
-    public UserController(FollowService followService, UserService userService) {
-        this.followService = followService;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -51,7 +48,6 @@ public class UserController {
                 .body(response);
     }
 
-    // If the id is not UUID, spring will automatically respond with a 404
     @PostMapping("user/id/{id}/follow")
     public ResponseEntity<FollowUserResponse> followUser(@PathVariable(name = "id") UUID idToFollow) {
         String username = getAccountUsername();
@@ -81,8 +77,6 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
-
-
 
     private String getAccountUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -3,7 +3,6 @@ package com.akaci.twotterbackend.application.controller;
 import com.akaci.twotterbackend.application.NEWSERVICE.TwootService;
 import com.akaci.twotterbackend.application.dto.request.CommentRequest;
 import com.akaci.twotterbackend.application.dto.request.TwootRequest;
-import com.akaci.twotterbackend.application.dto.response.UserResponse;
 import com.akaci.twotterbackend.application.dto.response.comment.CommentResponse;
 import com.akaci.twotterbackend.application.dto.response.like.LikeResponse;
 import com.akaci.twotterbackend.application.dto.response.twoot.TwootAllResponse;
@@ -11,11 +10,6 @@ import com.akaci.twotterbackend.application.dto.response.twoot.TwootResponse;
 import com.akaci.twotterbackend.application.service.LikeService;
 import com.akaci.twotterbackend.application.service.crud.CommentCrudService;
 import com.akaci.twotterbackend.application.service.crud.TwootCrudService;
-import com.akaci.twotterbackend.application.service.crud.UserCrudService;
-import com.akaci.twotterbackend.domain.model.Comment;
-import com.akaci.twotterbackend.domain.model.Twoot;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,7 +40,7 @@ public class TwootController {
     }
 
     @GetMapping("public/twoot")
-    public ResponseEntity<TwootAllResponse> getAllTwoots(UUID twootId) {
+    public ResponseEntity<TwootAllResponse> getAllTwoots() {
         TwootAllResponse response = twootService.getAllTwoots();
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -90,21 +84,6 @@ public class TwootController {
     public ResponseEntity<TwootResponse> postNewTwoot(@RequestBody TwootRequest twootRequest) {
         String username = getAccountUsername();
         TwootResponse response = twootService.postTwoot(twootRequest, username);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
-    }
-
-
-    @PostMapping("twoot/comment")
-    public ResponseEntity<CommentResponse> postComment(@RequestBody CommentRequest commentRequest) {
-        String username = getAccountUsername();
-        String content = commentRequest.content();
-        UUID twootId = commentRequest.twootId();
-
-        CommentResponse response = commentCrudService.postNewComment(username, content, twootId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
