@@ -29,7 +29,7 @@ public class AccountController {
 
         SignUpResponse response = authService.createAccount(username, password);
 
-        log.info("Account {} created successfully!", username);
+        log.info("Account {} created successfully!!", username);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
